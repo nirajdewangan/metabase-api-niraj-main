@@ -21,7 +21,7 @@ router.get('/', ((req, res, next) => {
 	// }
     let query;
     if(!model){
-        query = `SELECT DISTINCT * FROM main`;
+        query = `SELECT SUM(IF (isFalsePositive=1,1,0)) as anamoly ,SUM(IF (isFalseNegative=1,1,0)) as error,capture_date FROM main GROUP BY capture_date`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){
@@ -33,6 +33,10 @@ router.get('/', ((req, res, next) => {
 	console.log(query);
 
 	pool.promise().query(query).then(([rows,fields])=>{
+		rows.map( (item) => {
+			item.capture_date = new Date(item.capture_date).getDate();
+		})
+		
 		res.send(JSON.stringify({"status": 200, "error": null, "response": rows}));
     })
 	.catch((err)=>{
