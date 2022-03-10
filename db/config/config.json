@@ -1,0 +1,13 @@
+{
+	"development": {
+		"host": "localhost",
+        "user": "root",
+        "password": "root",
+        "database": "data",
+        "port": 3307,
+        "waitForConnections": true,
+        "connectionLimit": 20,
+        "queueLimit": 0
+      
+	}
+}

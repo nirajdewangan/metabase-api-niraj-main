@@ -1,0 +1,634 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "1.0.0",
+		"title": "Metabase API - Fetch",
+		"description": "",
+		"termsOfService": ""
+	},
+	"basePath": "/",
+	"tags": [
+		
+	],
+	"schemes": ["http", "https"],
+	"consumes": ["application/json"],
+	"produces": ["application/json"],
+	"paths": {
+		"/api/getModelData":{
+			"get": {
+				"tags": ["Modal"],
+				"description": "Get the modal data",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					},
+					{
+						"name": "start_time",
+						"in": "query",
+						"type": "string",
+						"description": "start time",
+						"example": 1
+					},
+					{
+						"name": "end_time",
+						"in": "query",
+						"type": "string",
+						"description": "end time",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/plotFrameCountGraph":{
+			"get": {
+				"tags": ["Modal"],
+				"description": "Get the modal data",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					},
+					{
+						"name": "start_time",
+						"in": "query",
+						"type": "string",
+						"description": "start time",
+						"example": 1
+					},
+					{
+						"name": "end_time",
+						"in": "query",
+						"type": "string",
+						"description": "end time",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/plotLabelCountGraph":{
+			"get": {
+				"tags": ["Modal"],
+				"description": "Get the modal data",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					},
+					{
+						"name": "start_time",
+						"in": "query",
+						"type": "string",
+						"description": "start time",
+						"example": 1
+					},
+					{
+						"name": "end_time",
+						"in": "query",
+						"type": "string",
+						"description": "end time",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/plotAnamolyCountGraph":{
+			"get": {
+				"tags": ["Modal"],
+				"description": "Get the modal data",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					},
+					{
+						"name": "start_time",
+						"in": "query",
+						"type": "string",
+						"description": "start time",
+						"example": 1
+					},
+					{
+						"name": "end_time",
+						"in": "query",
+						"type": "string",
+						"description": "end time",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getAccuracy": {
+			"get": {
+				"tags": ["Accuracy"],
+				"description": "Get the accuracy for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getAveragePrecision": {
+			"get": {
+				"tags": ["AveragePrecision"],
+				"description": "Get the Average Precision for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getOverallClassifierPerformance": {
+			"get": {
+				"tags": ["Overall Classifier Performance"],
+				"description": "Get overall classifier performance of the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getConfusionMatrix": {
+			"get": {
+				"tags": ["Confusion Matrix"],
+				"description": "Get the confusion matrix for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getDetectionTypes": {
+			"get": {
+				"tags": ["Detection Types"],
+				"description": "Get the detection types for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getDetectionsCount": {
+			"get": {
+				"tags": ["Detections Count"],
+				"description": "Get the count of number of detections for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getClassesCount": {
+			"get": {
+				"tags": ["Classes Count"],
+				"description": "Get the count of number of classes for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getFramesCount": {
+			"get": {
+				"tags": ["Frames Count"],
+				"description": "Get the count for no of frames for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getInstancesCount": {
+			"get": {
+				"tags": ["Instances"],
+				"description": "Get the count for number of instances for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getF1Score": {
+			"get": {
+				"tags": ["F1 Score"],
+				"description": "Get the F1 Score for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getPrecision": {
+			"get": {
+				"tags": ["Precision"],
+				"description": "Get the Precision for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getPrecisionBuckets": {
+			"get": {
+				"tags": ["Precision Buckets"],
+				"description": "Get the precision buckets for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getRecall": {
+			"get": {
+				"tags": ["Recall"],
+				"description": "Get the accuracy for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getRecallBuckets": {
+			"get": {
+				"tags": ["Recall Buckets"],
+				"description": "Get the accuracy for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getSpecificity": {
+			"get": {
+				"tags": ["Specificity"],
+				"description": "Get the specifity for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		},
+		"/api/getYoudenIndex": {
+			"get": {
+				"tags": ["Youden Index"],
+				"description": "Get the youden Index for the selected model",
+				"produces": ["application/json"],
+				"parameters": [
+					{
+						"name": "model",
+						"in": "query",
+						"type": "string",
+						"description": "Model Name",
+						"example": 1
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					},
+					"400": {
+						"description": "Bad Request",
+						"schema": {
+							"$ref": "#/definitions/business_exception"
+						}
+					}
+				}
+			}
+		}
+
+	},
+	"definitions": {
+		"error": {
+			"type": "object",
+			"description": "Error data",
+			"properties": {
+				"msg": {
+					"type": "string",
+					"description": "Error message"
+				}
+			}
+		},
+		"business_exception": {
+			"type": "array",
+			"description": "Error array",
+			"items": {
+				"$ref": "#/definitions/error"
+			}
+		}
+	}
+}
