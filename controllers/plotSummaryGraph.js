@@ -21,7 +21,14 @@ router.get('/', ((req, res, next) => {
 	// }
     let query;
     if(!model){
-        query = `SELECT model, true_class AS type, capture_date, COUNT(*) as capture_time FROM main WHERE capture_date >= DATE_ADD(CURDATE(), INTERVAL -3 DAY) GROUP BY true_class, capture_date `;
+        query = `SELECT DISTINCT(ms.id) AS id,
+        ms.model_name,
+        ms.health,
+        ms.needs_training,
+        ms.drift, mts.timestamp, mts.confidence,mts.data_drift, mts.infer_time, ms.num_instances
+ FROM model_summary ms 
+ LEFT JOIN model_timeseries_summary mts ON mts.model_summary_id = ms.id
+ LEFT JOIN model_uptime_summary mus ON mus.model_summary_id = ms.id`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){
@@ -33,11 +40,10 @@ router.get('/', ((req, res, next) => {
 	console.log(query);
 
 	pool.promise().query(query).then(([rows,fields])=>{
+		// rows.map( (item) => {
+		// 	item.capture_date = new Date(item.capture_date).getDate();
+		// })
 
-		rows.map( (item) => {
-			item.capture_date = new Date(item.capture_date).getDate();
-		})
-	
 		res.send(JSON.stringify({"status": 200, "error": null, "response": rows}));
     })
 	.catch((err)=>{

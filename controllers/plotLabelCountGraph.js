@@ -21,7 +21,7 @@ router.get('/', ((req, res, next) => {
 	// }
     let query;
     if(!model){
-        query = `SELECT model, true_class, capture_date, COUNT(*) as capture_time FROM main WHERE capture_date >= DATE_ADD(CURDATE(), INTERVAL -2 DAY) GROUP BY true_class, capture_date`;
+        query = `SELECT model, true_class AS type, capture_date, COUNT(*) as capture_time FROM main WHERE capture_date >= DATE_ADD(CURDATE(), INTERVAL -3 DAY) GROUP BY true_class, capture_date`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){
@@ -36,7 +36,7 @@ router.get('/', ((req, res, next) => {
 		rows.map( (item) => {
 			item.capture_date = new Date(item.capture_date).getDate();
 		})
-		
+
 		res.send(JSON.stringify({"status": 200, "error": null, "response": rows}));
     })
 	.catch((err)=>{

@@ -25,6 +25,8 @@ var modelCtrl = require('./controllers/getModelData');
 var plotFrameCountGraphCtrl = require('./controllers/plotFrameCountGraph');
 var plotLabelCountGraphCtrl = require('./controllers/plotLabelCountGraph');
 var plotAnamolyCountGraphCtrl = require('./controllers/plotAnamolyCountGraph');
+var plotSummaryGraphCtrl = require('./controllers/plotSummaryGraph');
+
 
 
 //CORS
@@ -103,6 +105,9 @@ app.use('/api/getModelData', modelCtrl);
 app.use('/api/plotFrameCountGraph', plotFrameCountGraphCtrl);
 app.use('/api/plotLabelCountGraph', plotLabelCountGraphCtrl);
 app.use('/api/plotAnamolyCountGraph', plotAnamolyCountGraphCtrl);
+app.use('/api/plotSummaryGraphCtrl', plotSummaryGraphCtrl);
+
+
 
 
 app.listen(port, function() {
