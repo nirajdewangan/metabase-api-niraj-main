@@ -22,13 +22,14 @@ router.get('/', ((req, res, next) => {
     let query;
     if(!model){
         query = `SELECT DISTINCT(ms.id) AS id,
-        ms.model_name,
-        ms.health,
-        ms.needs_training,
-        ms.drift, mts.timestamp, mts.confidence,mts.data_drift, mts.infer_time, ms.num_instances
- FROM model_summary ms 
- LEFT JOIN model_timeseries_summary mts ON mts.model_summary_id = ms.id
- LEFT JOIN model_uptime_summary mus ON mus.model_summary_id = ms.id`;
+		    ms.model,
+			ms.model_name,
+			ms.health,
+			ms.needs_training,
+			ms.drift, GROUP_CONCAT(mts.timestamp) AS tmstamp, GROUP_CONCAT(mts.confidence) AS confidence,GROUP_CONCAT(mts.data_drift) AS data_drift, GROUP_CONCAT(mts.infer_time) AS infer_time,GROUP_CONCAT(mts.uptime) as uptime, ms.num_instances
+			FROM model_summary ms 
+			LEFT JOIN model_timeseries_summary mts ON mts.model_summary_id = ms.id
+			LEFT JOIN model_uptime_summary mus ON mus.model_summary_id = ms.id GROUP BY ms.id`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){
