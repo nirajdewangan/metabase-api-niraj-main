@@ -23,7 +23,7 @@ router.get('/', ((req, res, next) => {
     if(!model){
         query = `SELECT  SUM(IF (isFalsePositive=1,1,0)) AS isFalsePositiveOne,SUM(IF (isFalseNegative=1,1,0)) AS isFalseNegativeOne,
 		( SUM(IF (isFalsePositive=1,1,0)) + SUM(IF (isFalseNegative=1,1,0)) ) AS anomoly, capture_date
-		FROM main GROUP BY capture_date`;
+		FROM main GROUP BY capture_date  ORDER BY capture_date ASC`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){
