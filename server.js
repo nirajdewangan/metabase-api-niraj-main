@@ -26,6 +26,9 @@ var plotFrameCountGraphCtrl = require('./controllers/plotFrameCountGraph');
 var plotLabelCountGraphCtrl = require('./controllers/plotLabelCountGraph');
 var plotAnamolyCountGraphCtrl = require('./controllers/plotAnamolyCountGraph');
 var plotSummaryGraphCtrl = require('./controllers/plotSummaryGraph');
+var getAllImageSliderCtrl = require('./controllers/getAllImageSlider');
+var getVideoForImageSliderCtrl = require('./controllers/getVideoForImageSlider');
+
 
 
 
@@ -105,7 +108,12 @@ app.use('/api/getModelData', modelCtrl);
 app.use('/api/plotFrameCountGraph', plotFrameCountGraphCtrl);
 app.use('/api/plotLabelCountGraph', plotLabelCountGraphCtrl);
 app.use('/api/plotAnamolyCountGraph', plotAnamolyCountGraphCtrl);
-app.use('/api/plotSummaryGraphCtrl', plotSummaryGraphCtrl);
+app.use('/api/plotSummaryGraph', plotSummaryGraphCtrl);
+app.use('/api/getAllImageSlider', getAllImageSliderCtrl);
+app.use('/api/getVideoForImageSlider', getVideoForImageSliderCtrl);
+
+
+
 
 
 
