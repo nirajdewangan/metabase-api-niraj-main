@@ -21,15 +21,16 @@ router.get('/', ((req, res, next) => {
 	// }
     let query;
     if(!model){
-        query = `SELECT DISTINCT(ms.id) AS id,
-		    ms.model,
-			ms.model_name,
-			ms.health,
-			ms.needs_training,
-			ms.drift, GROUP_CONCAT(mts.timestamp) AS tmstamp, GROUP_CONCAT(mts.confidence) AS confidence,GROUP_CONCAT(mts.data_drift) AS data_drift, GROUP_CONCAT(mts.infer_time) AS infer_time,GROUP_CONCAT(mts.uptime) as uptime, ms.num_instances
-			FROM model_summary ms 
-			LEFT JOIN model_timeseries_summary mts ON mts.model_summary_id = ms.id
-			LEFT JOIN model_uptime_summary mus ON mus.model_summary_id = ms.id GROUP BY ms.id`;
+        query = `SELECT model, health, modelname, needstraining, drift, numinstances, DAY, musuptime, GROUP_CONCAT(TIMESTAMP) AS TIMESTAMP, GROUP_CONCAT(confidence) AS confidence, 
+		GROUP_CONCAT(datadraft) AS datadraft,  GROUP_CONCAT(infertime) AS infertime, GROUP_CONCAT(mtsuptime) AS mtsuptime
+		FROM (SELECT ms.model,mts.timestamp, 
+		CAST(SUM(mts.confidence) AS DECIMAL(12,4)) AS confidence ,CAST(SUM(mts.data_drift) AS DECIMAL(12,4)) AS datadraft, 
+		CAST(SUM(mts.infer_time) AS DECIMAL(12,4)) AS infertime,  CAST(SUM(mts.uptime) AS DECIMAL(12,4)) AS mtsuptime,
+		ms.health AS health, ms.model_name AS modelname, ms.needs_training AS needstraining,
+		ms.drift AS drift, ms.num_instances AS numinstances, mus.day AS DAY, mus.uptime AS musuptime
+		FROM model_summary ms 
+		LEFT JOIN model_timeseries_summary mts ON mts.model = ms.model
+		LEFT JOIN model_uptime_summary mus ON mus.model = ms.model GROUP BY ms.model,mts.timestamp) AS a GROUP BY a.model`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){
@@ -44,6 +45,7 @@ router.get('/', ((req, res, next) => {
 		// rows.map( (item) => {
 		// 	item.capture_date = new Date(item.capture_date).getDate();
 		// })
+       //health  --> good and bad, 
 
 		res.send(JSON.stringify({"status": 200, "error": null, "response": rows}));
     })
