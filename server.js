@@ -28,6 +28,7 @@ var plotAnamolyCountGraphCtrl = require('./controllers/plotAnamolyCountGraph');
 var plotSummaryGraphCtrl = require('./controllers/plotSummaryGraph');
 var getAllImageSliderCtrl = require('./controllers/getAllImageSlider');
 var getVideoForImageSliderCtrl = require('./controllers/getVideoForImageSlider');
+var plotRulesGraphCtrl = require('./controllers/plotRulesGraph');
 
 
 
@@ -111,6 +112,7 @@ app.use('/api/plotAnamolyCountGraph', plotAnamolyCountGraphCtrl);
 app.use('/api/plotSummaryGraph', plotSummaryGraphCtrl);
 app.use('/api/getAllImageSlider', getAllImageSliderCtrl);
 app.use('/api/getVideoForImageSlider', getVideoForImageSliderCtrl);
+app.use('/api/plotRulesGraph', plotRulesGraphCtrl);
 
 
 
