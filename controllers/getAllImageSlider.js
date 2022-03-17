@@ -22,7 +22,7 @@ router.get('/', ((req, res, next) => {
     let query;
     if(!model){ 
 
- query = `SELECT GROUP_CONCAT(image_id) as imageids, GROUP_CONCAT(s3image) as images FROM main where model = 'yolov1'  GROUP BY model`;
+ query = `SELECT image_id, (image_name) as images, model, model_instance, model_id  FROM main WHERE model = "yolov1"`;
     }else{
         query = `SELECT GROUP_CONCAT(image_id) as imageids, GROUP_CONCAT(image) as images FROM main where model ="${model}"  GROUP BY model`;
 		
@@ -32,9 +32,13 @@ router.get('/', ((req, res, next) => {
 	console.log(query);
 
 	pool.promise().query(query).then(([rows,fields])=>{
-		// rows.map( (item) => {
-		// 	item.capture_date = new Date(item.capture_date).getDate();
-		// })
+		 rows.map( (item) => {
+			 let model_instance_val = '';
+			if(item.model_instance.indexOf("-01") !== -1){
+				model_instance_val = '01_BDD';
+			}
+		 	item.images = `https://ragaaiimages.s3.ap-south-1.amazonaws.com/ISC/${model_instance_val}/${item.model_id}/${item.images}`;
+		 })
 		//'https://www.youtube.com/watch?v='+
 
 		res.send(JSON.stringify({"status": 200, "error": null, "response": rows}));
