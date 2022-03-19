@@ -15,19 +15,32 @@ router.get('/', ((req, res, next) => {
 	const end_time = end_time_params.replace(/['"]+/g, '');
 	const current_time = current_time_params.replace(/['"]+/g, '');
 
-	// if(!isNaN((model))){
-	// 	res.status(400);
-	// 	res.send(JSON.stringify({"status": 400, "error": 'Bad Request - Model must contain a valid string', "response": null}));
-	// 	next();
-	// 	return;	
-	// }
+	//if 0 -> currentdate (for now Jan 15)
+	//if 7 -> Jan 15 minus 7 (for now Jan 9)
+	//Jan 15 (for now constant)
+
+	let date1_params = req.query['date'] ?req.query['date'].toString().trim():"";
+	let date1 = date1_params.replace(/['"]+/g, '');
+	let date2 = date1_params.replace(/['"]+/g, '');
+	if(date1==0 ){ 
+		date1='2022-01-15' 
+	} else if (date1==7){
+		date1 = '2022-01-09'
+	}
+
+	let date3 = '2022-01-15';
+	
     let query;
     if(!model){
         
 
-		query = `SELECT ms.model, FROM_UNIXTIME(TIMESTAMP) as timestamp, health, SUM(needs_retraining) as needs_retraining, SUM(drift) as drift, num_instances, SUM(confidence) as confidence, SUM(mts.data_drift) as data_drift, infer_time
-		FROM model_summary ms JOIN model_timeseries_summary mts ON mts.model = ms.model
-		JOIN model_uptime_summary mus ON mus.model = ms.model WHERE DATE(FROM_UNIXTIME(TIMESTAMP)) >= "2022-01-09" AND DATE(FROM_UNIXTIME(TIMESTAMP)) <= "2022-01-15" GROUP BY DATE(FROM_UNIXTIME(TIMESTAMP))`;
+		query = `SELECT a.*,mus.uptime FROM (SELECT  ms.model_name, FROM_UNIXTIME(TIMESTAMP) AS timestamp, health, needs_retraining, drift AS drift, num_instances,
+		SUM(confidence) AS confidence,SUM(mts.data_drift) AS data_drift, 
+		SUM(infer_time) AS infer_time, row_number() over (partition by ms.model_name) as day
+		FROM model_summary ms 
+		JOIN model_timeseries_summary mts ON mts.model_name = ms.model_name
+		 WHERE DATE(FROM_UNIXTIME(TIMESTAMP)) >= "${date1}" AND DATE(FROM_UNIXTIME(TIMESTAMP)) <= "${date3}" 
+		GROUP BY ms.model_name,DATE(FROM_UNIXTIME(TIMESTAMP))) AS a LEFT JOIN model_uptime_summary mus ON (mus.day = a.day AND a.model_name = mus.model_name)`;
 
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
@@ -37,64 +50,62 @@ router.get('/', ((req, res, next) => {
 		
     }
 
-	console.log(query);
+	//console.log(query);
 
 	pool.promise().query(query).then(([rows,fields])=>{
-		// rows.map( (item) => {
-		// 	item.capture_date = new Date(item.capture_date).getDate();
-		// })
-       
-	let values = {
-		model: "",
-		timestamp:[],
-		health: "",
-		needs_training: "",
-		drift:"",
-		num_instances: "",
-		confidence:[],
-		data_drift:[],
-		infer_time:"",
-		day:"",
-		uptime:""
-	  } 
-	
-	let count = 0;
-	let a = 190;
-	  rows.forEach((item,index) => {
-		let d = new Date(item.timestamp)
-		count++;
-		// item.timestamp = d.getFullYear() +'-'+(d.getMonth()+1)+'-'+(d.getDate());
-		item.timestamp = d.getDate();
-		values.model = item.model;
-		values.health = item.health;
-		values.needs_training = item.needs_training;
-		values.drift = item.drift;
-		values.num_instances = item.num_instances;
-		values.timestamp = [...values.timestamp, item.timestamp];
-
-		if(index==6){
-			a = 168.95;
-			values.confidence = [ ...values.confidence, (item.confidence/a)];
-			values.data_drift = [...values.data_drift, (item.data_drift)/a];
-			values.infer_time = [...values.infer_time, (item.infer_time)/a];		
-		} else {
-			values.confidence = [ ...values.confidence, (item.confidence/190)];
-			values.data_drift = [...values.data_drift, (item.data_drift/190)];
-			values.infer_time = [...values.infer_time, (item.infer_time/190)];		
+		//console.log("rows", rows);
+		var objectWithGroupByName = [];
+		//console.log("date1", date1)
+		// let count = 4;
+		if(date2 == '0'){
+			//console.log("rows[0].timestamp",new Date(rows[0].timestamp).getHours())
 			
+			objectWithGroupByName = Object.values(rows.reduce((a, { model_name, timestamp, health, needs_retraining, drift, num_instances, confidence, data_drift, infer_time, day, uptime  }) => {
+			console.log("aa", a);
+			if (!a[model_name]) { 
+				a[model_name] = { model_name, timestamp:[], health, needs_retraining, drift, num_instances, confidence:[], data_drift:[], infer_time:[], day:[], uptime:[] };
+			}
+			
+			//  a[model_name].timestamp.push(new Date(timestamp).getDate());
+			let timestamp1 = 4
+			 for(i=0; i<=5; i++){
+				
+				a[model_name].timestamp.push(timestamp1); 
+				a[model_name].confidence.push( (confidence/uptime) /4);
+			 	a[model_name].data_drift.push( (data_drift/uptime) /4);
+			 	a[model_name].infer_time.push( (infer_time/uptime) /4);
+				 timestamp1 = timestamp1 + 4; 
+			}
+			 
+			 a[model_name].uptime.push(uptime);
+			 a[model_name].day.push(day);
+
+			 return a;
+		  }, {}, count=4));
+
 		}
-		if(index==6){
-			values.uptime = [...values.uptime, 168.95];	
-		} else {
-		 values.uptime = [...values.uptime, 190];
+		else if (date2 == '7'){
+			console.log("inside date1 equal 7")
+			objectWithGroupByName = Object.values(rows.reduce((a, { model_name, timestamp, health, needs_retraining, drift, num_instances, confidence, data_drift, infer_time, day, uptime  }) => {
+			
+				if (!a[model_name]) { 
+					a[model_name] = { model_name, timestamp:[], health, needs_retraining, drift, num_instances, confidence:[], data_drift:[], infer_time:[], day:[], uptime:[] };
+				}
+				
+				 a[model_name].timestamp.push(new Date(timestamp).getDate());
+				 a[model_name].confidence.push(confidence/uptime);
+				 a[model_name].data_drift.push(data_drift/uptime);
+				 a[model_name].infer_time.push(infer_time/uptime);
+				 a[model_name].uptime.push(uptime);
+				 a[model_name].day.push(day);
+	
+				 return a;
+			  }, {}));
+	
 		}
+		 
 
-		 values.day = [...values.day, count]
-		
-	 	})
-
-
-		res.send(JSON.stringify({"status": 200, "error": null, "response": values}));
+		res.send(JSON.stringify({"status": 200, "error": null, "response": objectWithGroupByName}));
     })
 	.catch((err)=>{
 		
