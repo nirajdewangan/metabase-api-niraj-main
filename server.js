@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 const app = express();
 var subpath = express();
 var cors = require('cors');
-
+var path = require("path");
 // CONTROLLERS
 var accuraryCtrl = require('./controllers/accuracy');
 var averagePrecisionCtrl = require('./controllers/average-precision');
@@ -56,18 +56,18 @@ app.use(
 	})
 );
 app.use("/v1", subpath);
-var swagger = require('swagger-node-express').createNew(subpath);
-app.use(express.static('swagger'));
-swagger.setApiInfo({
-	title: 'Metabase Query API',
-	description: '',
-	termsOfServiceUrl: '',
-	contact: '',
-	license: '',
-	licenseUrl: ''
-});
+// var swagger = require('swagger-node-express').createNew(subpath);
+// app.use(express.static('swagger'));
+// swagger.setApiInfo({
+// 	title: 'Metabase Query API',
+// 	description: '',
+// 	termsOfServiceUrl: '',
+// 	contact: '',
+// 	license: '',
+// 	licenseUrl: ''
+// });
 // Set api-doc path
-swagger.configureSwaggerPaths('', 'api-docs', '');
+// swagger.configureSwaggerPaths('', 'api-docs', '');
 
 // Configure the API domain
 var domain = 'localhost';
@@ -84,11 +84,14 @@ var port = 3000;
 
 // Set and display the application URL
 var applicationUrl = 'http://' +  + ':' + port;
-swagger.configure(applicationUrl, '1.0.0');
+// swagger.configure(applicationUrl, '1.0.0');
 
-app.get('/', function(req, res) {
-	res.sendFile(__dirname + '/swagger/index.html');
-});
+app.use(express.static(path.join(__dirname,"./client/mybuild")));
+
+
+// app.get('/apis', function(req, res) {
+// 	res.sendFile(__dirname + '/swagger/index.html');
+// });
 app.use('/api/getAccuracy', accuraryCtrl);
 app.use('/api/getAveragePrecision', averagePrecisionCtrl);
 app.use('/api/getOverallClassifierPerformance', classifierPerformanceCtrl);

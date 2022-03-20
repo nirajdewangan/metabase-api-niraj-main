@@ -7,22 +7,18 @@ router.get('/', ((req, res, next) => {
 	const model_params = req.query['model'] ?req.query['model'].toString().trim():"";
 	const model = model_params.replace(/['"]+/g, '');
 
-	const start_time_params = req.query['start_time'] ?req.query['start_time'].toString().trim():"";
-	const end_time_params = req.query['end_time'] ?req.query['end_time'].toString().trim():"";
-	const current_time_params = req.query['current_time'] ?req.query['current_time'].toString().trim():"";
-
-	const st_time = start_time_params.replace(/['"]+/g, '');
-	const end_time = end_time_params.replace(/['"]+/g, '');
-	const current_time = current_time_params.replace(/['"]+/g, '');
-
-	//if 0 -> currentdate (for now Jan 15)
-	//if 7 -> Jan 15 minus 7 (for now Jan 9)
-	//Jan 15 (for now constant)
+	// const start_time_params = req.query['start_time'] ?req.query['start_time'].toString().trim():"";
+	// const end_time_params = req.query['end_time'] ?req.query['end_time'].toString().trim():"";
+	// const current_time_params = req.query['current_time'] ?req.query['current_time'].toString().trim():"";
+	// const st_time = start_time_params.replace(/['"]+/g, '');
+	// const end_time = end_time_params.replace(/['"]+/g, '');
+	// const current_time = current_time_params.replace(/['"]+/g, '');
 
 	let date1_params = req.query['date'] ?req.query['date'].toString().trim():"";
 	let date1 = date1_params.replace(/['"]+/g, '');
 	let date2 = date1_params.replace(/['"]+/g, '');
-	if(date1==0 ){ 
+
+	if(date1==0 ){ //one day + as data is old so this static logic applied
 		date1='2022-01-15' 
 	} else if (date1==7){
 		date1 = '2022-01-09'
@@ -32,10 +28,6 @@ router.get('/', ((req, res, next) => {
 	
     let query;
     if(!model){
-        
-
-		
-
 		if(date2 == '0'){
 		query = `SELECT timeSlice as timestamp, bin_count as uptime, model_name, health, needs_retraining, drift AS drift, num_instances,
 		(confidence/bin_count) AS confidence,(data_drift/bin_count) AS data_drift, 
@@ -74,33 +66,9 @@ router.get('/', ((req, res, next) => {
 	//console.log("query",query);
 
 	pool.promise().query(query).then( ([rows,fields])=>{
-		//console.log("rows", rows);
 		var objectWithGroupByName = [];
 		let objectWithGroupByName_arr = {};
-		//console.log("date1", date1)
-		// let count = 4;
 		if(date2 == '0'){
-			//console.log("rows[0].timestamp",new Date(rows[0].timestamp).getHours())
-			
-		// 	objectWithGroupByName = Object.values(rows.reduce((a, { timestamp, uptime, model_name, health, needs_retraining, drift, num_instances, confidence, data_drift,  infer_time  }) => {
-		// 	//console.log("aa", a);
-		// 	if (!a[model_name]) { 
-		// 		a[model_name] = { model_name, timestamp:[], health, needs_retraining, drift, num_instances, confidence:[], data_drift:[], infer_time:[], uptime:[] };
-		// 	}
-			
-				
-		// 	a[model_name].timestamp.push(timestamp); 
-		// 	a[model_name].confidence.push( (confidence));
-		// 	a[model_name].data_drift.push( (data_drift) );
-		// 	a[model_name].infer_time.push( (infer_time));			 
-		// 	a[model_name].uptime.push(uptime);
-		// 	//  a[model_name].timestamp.sort(function(a, b) {
-		// 	// 	return a - b;
-		// 	//   });
-
-
-		// 	 return a;
-		//   }, {}));
 
 		var objectWithGroupByName1 =  resolveResponseData(rows);
 

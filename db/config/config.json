@@ -4,7 +4,7 @@
         "user": "root",
         "password": "root",
         "database": "data",
-        "port": 3307,
+        "port": 3306,
         "waitForConnections": true,
         "connectionLimit": 20,
         "queueLimit": 0
