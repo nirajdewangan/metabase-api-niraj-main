@@ -21,9 +21,9 @@ router.get('/', ((req, res, next) => {
 	// }
     let query;
     if(!model){
-        query = `SELECT  SUM(IF (isFalsePositive=1,1,0)) AS isFalsePositiveOne,SUM(IF (isFalseNegative=1,1,0)) AS isFalseNegativeOne,
-		( SUM(IF (isFalsePositive=1,1,0)) + SUM(IF (isFalseNegative=1,1,0)) ) AS anomoly, capture_date
-		FROM main GROUP BY capture_date  ORDER BY capture_date ASC`;
+        query = `select a.*,  (isFalsePositiveOne+isFalseNegativeOne) as anomoly from (SELECT  SUM(IF (isFalsePositive=1,1,0)) AS isFalsePositiveOne,SUM(IF (isFalseNegative=1,1,0)) AS isFalseNegativeOne,
+		Date(FROM_UNIXTIME(capture_time)) as capture_date
+	   FROM main where model_id = 'yoloV3-v0' GROUP BY Date(FROM_UNIXTIME(capture_time))  ORDER BY Date(FROM_UNIXTIME(capture_time)) ASC) as a`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){

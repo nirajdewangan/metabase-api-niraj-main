@@ -31,7 +31,10 @@ router.get('/', ((req, res, next) => {
 	console.log(query);
 
 	pool.promise().query(query).then(([rows,fields])=>{
-		
+
+		rows.map( (item) => {
+		item.video = 'https://ragaaiimages.s3.ap-south-1.amazonaws.com/ISC/01_BDD/01_BDD.mp4';
+		})
 
 		res.send(JSON.stringify({"status": 200, "error": null, "response": rows}));
     })
