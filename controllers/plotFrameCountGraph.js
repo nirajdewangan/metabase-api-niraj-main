@@ -21,8 +21,8 @@ router.get('/', ((req, res, next) => {
 	// }
     let query;
     if(!model){
-        query = `SELECT true_class AS type, capture_date, COUNT(*) as capture_time FROM main WHERE capture_date >= DATE_ADD(CURDATE(),
-		 INTERVAL -5 DAY) GROUP BY true_class, capture_date  ORDER BY capture_date ASC`;
+        query = `SELECT true_class AS  type, DATE(FROM_UNIXTIME(capture_time)) AS capture_date, COUNT(*) AS capture_time FROM main WHERE capture_time >= DATE_ADD(CURDATE(),
+		INTERVAL -5 DAY) GROUP BY true_class, DATE(FROM_UNIXTIME(capture_time))  ORDER BY DATE(FROM_UNIXTIME(capture_time)) ASC`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){

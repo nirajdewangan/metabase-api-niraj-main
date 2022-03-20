@@ -21,14 +21,7 @@ router.get('/', ((req, res, next) => {
 	// }
     let query;
     if(!model){
-        // query = `SELECT true_class AS type, capture_date, COUNT(*) as capture_time FROM main WHERE capture_date >= DATE_ADD(CURDATE(),
-		//  INTERVAL -5 DAY) GROUP BY true_class, capture_date  ORDER BY capture_date ASC`;
-
-		query = `SELECT true_class AS type, capture_time, Date(FROM_UNIXTIME(capture_time)) as capture_date FROM main WHERE Date(FROM_UNIXTIME(capture_time)) >= '2022-01-09' and Date(FROM_UNIXTIME(capture_time)) <= '2022-01-15' and model_id = 'yoloV3-v0' group by  capture_time`;
-
-		// query = `SELECT true_class AS type, capture_date, COUNT(*) as capture_time FROM main WHERE capture_date >= DATE_ADD(CURDATE(),
-		// INTERVAL -5 DAY) GROUP BY true_class, capture_date  ORDER BY capture_date ASC`;
-
+        query = `SELECT rs.rules, cn.class, CONCAT(DATE(starttime),' - ', DATE(endtime)) as date, rs.ruleid, cn.configurationid from rules rs LEFT JOIN ruleviolationcounter rv ON rv.ruleid = rs.ruleid LEFT JOIN configuration cn ON cn.configurationid = rv.configuration;`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){

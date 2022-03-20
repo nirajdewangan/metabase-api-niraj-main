@@ -21,7 +21,26 @@ router.get('/', ((req, res, next) => {
 	// }
     let query;
     if(!model){
-        query = `SELECT DISTINCT * FROM main`;
+        query = `SELECT
+		* , 2*(finalSource.precision*finalSource.recall)/(finalSource.precision+finalSource.recall) AS 'F1_score',
+		(finalSource.specificity+finalSource.recall-1) AS 'Youden_Index'
+		FROM
+		 (
+			 SELECT
+				 model,
+				 source.sumTruePositive / (source.sumTruePositive + source.sumFalsePositive) AS 'precision',
+				 source.sumTruePositive /(source.sumTruePositive + source.sumFalseNegative) AS recall,
+				 (source.sumTruePositive + source.sumTrueNegative) /(
+					 source.sumTruePositive + source.sumFalsePositive + source.sumFalseNegative + source.sumTrueNegative
+				 ) AS accuracy,
+				 source.sumTrueNegative /(source.sumTrueNegative + source.sumFalsePositive) AS specificity
+			 FROM (
+					 SELECT model,SUM(isTruePositive) AS sumTruePositive,
+						 SUM(isTrueNegative) AS sumTrueNegative,
+						 SUM(isFalsePositive) AS sumFalsePositive,
+						 SUM(isFalseNegative) AS sumFalseNegative
+					 FROM
+						 main WHERE model_id="yoloV3-v0") AS SOURCE ) AS finalSource`;
     }else{
         query = `SELECT DISTINCT * FROM main WHERE model="${model}"`;
 		if(st_time && end_time ){
