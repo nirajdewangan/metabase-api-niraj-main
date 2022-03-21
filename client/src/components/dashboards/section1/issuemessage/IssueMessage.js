@@ -85,9 +85,9 @@ function IssueMessage() {
       })
   }
 
-  const getNextImage = async (id, name,configId,selectedModel) => {
+  const getNextImage = async (id, name, configId, selectedModel) => {
     setCurrentImg(null)
-    let nextImg = await axios.get("/api/raga/get_next_image/" + id + "/" + name+"/"+configId+"/"+selectedModel)
+    let nextImg = await axios.get("/api/raga/get_next_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
     if (nextImg && nextImg.data && nextImg.data.payload && nextImg.data.payload.data && nextImg.data.payload.data.rows && nextImg.data.payload.data.rows[0])
       console.log("The next image is ", nextImg.data.payload.data.rows[0])
     let imgObj = nextImg.data.payload.data.rows[0];
@@ -99,9 +99,9 @@ function IssueMessage() {
     });
   }
 
-  const getPreImage = async (id, name,configId,selectedModel) => {
+  const getPreImage = async (id, name, configId, selectedModel) => {
     setCurrentImg(null)
-    let nextImg = await axios.get("/api/raga/get_pre_image/" + id + "/" + name+"/"+configId+"/"+selectedModel)
+    let nextImg = await axios.get("/api/raga/get_pre_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
     if (nextImg && nextImg.data && nextImg.data.payload && nextImg.data.payload.data && nextImg.data.payload.data.rows && nextImg.data.payload.data.rows[0])
       console.log("The next image is ", nextImg.data.payload.data.rows[0])
     let imgObj = nextImg.data.payload.data.rows[0];
@@ -111,6 +111,16 @@ function IssueMessage() {
       nextId: imgObj[2],
       nextName: imgObj[1]
     });
+  }
+
+  const createJiraIssue = async (issueTitle, issueDes) => {
+    console.log("inside createIssue ", issueTitle, issueDes);
+    let jiraStt = await axios.post("/api/raga/create_jira_issue", {
+      issueTitle: issueTitle,
+      issueDes: issueDes
+    })
+    console.log('the jira create status is ', jiraStt);
+    alert("Jira issue created : "+issueDes);
   }
 
   useEffect(async () => {
@@ -136,7 +146,7 @@ function IssueMessage() {
     //get issues end
 
     //get next image start
-    getNextImage(null, null,allConfigurations.data.payload.data.rows[0][0],localStorage.getItem("selectedModelV"));
+    getNextImage(null, null, allConfigurations.data.payload.data.rows[0][0], localStorage.getItem("selectedModelV"));
     //get next image end
   }, [])
 
@@ -152,20 +162,28 @@ function IssueMessage() {
             <div className="row">
 
               <h4>Issue List</h4>
-              <div style={{ width: "100%", height: "250px",padding:"20px", overflowY: "scroll" }}>
+              <div style={{ width: "100%", height: "250px", padding: "20px", overflowY: "scroll" }}>
                 {
-                  allIssuesData.map((issue) => {
+                  allIssuesData.map((issue, i) => {
                     console.log("Issue is :: ", issue)
                     return (
                       <>
                         <div style={{ width: "100%", padding: '10px', backgroundColor: "#ffffff", margin: "10px", border: "1px solid #cccccc", borderRadius: "10px" }}>
+
+
+                          <span style={{fontFamily:"georgia",fontSize:"20px",color:"red"}}>{i + 1}. </span>
                           <b>{issue[2]}</b> is <b>{issue[3]}</b> <b>{issue[5]}</b> <b>{issue[4]}</b> under the rule id <b>{issue[0]}</b> and configuration id <b>{issue[1]}</b>
                           <br />
-                          <div style={{ display: "flex",flexDirection:"row-reverse" }}>
-                            <button style={{width:"30px",height:"30px"}} className="btn btn-danger btn-sm">+</button> &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button style={{width:"30px",height:"30px"}} className="btn btn-primary btn-sm">
+                          <div style={{ display: "flex", flexDirection: "row-reverse" }}>
+                            <button style={{ width: "30px", height: "30px" }} className="btn btn-danger btn-sm" onClick={() => {
+                              createJiraIssue("Raga Ai Issue-" + (i + 1), `
+                              ${issue[2]} is ${issue[3]} ${issue[5]} ${issue[4]} under the rule id ${issue[0]} and configuration id ${issue[1]}
+                              `);
+                            }}>+</button> &nbsp;&nbsp;&nbsp;&nbsp;
+                            <button style={{ width: "30px", height: "30px" }} className="btn btn-primary btn-sm">
                               -
                             </button>
+
                           </div>
                         </div>
                       </>
@@ -218,12 +236,12 @@ function IssueMessage() {
 
                     <div style={{ width: "100%", backgroundColor: "#ffffff", marginTop: "20px" }}>
                       <button className="btn btn-default float-left" style={{ width: "100px" }} onClick={async () => {
-                        getPreImage(currentImg.nextId, currentImg.nextName,configId,selectedModel);
+                        getPreImage(currentImg.nextId, currentImg.nextName, configId, selectedModel);
 
                       }}> Previous</button>
 
                       <button className="btn btn-default float-right" style={{ width: "100px", marginLeft: "250px" }} onClick={async () => {
-                        getNextImage(currentImg.nextId, currentImg.nextName,configId,selectedModel);
+                        getNextImage(currentImg.nextId, currentImg.nextName, configId, selectedModel);
 
                       }}>Next</button>
                     </div>
@@ -271,14 +289,14 @@ function IssueMessage() {
                   </div>
                 </div>
               </div>
-<hr/>
+              <hr />
               <div className="jubotron">
                 <p>
                   Copyright : @raga.ai
                 </p>
-               <h6>
-                 Statics & data
-               </h6>
+                <h6>
+                  Statics & data
+                </h6>
 
               </div>
 

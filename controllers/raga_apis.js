@@ -236,4 +236,47 @@ router.get("/get_pre_image/:id/:name/:configId/:selectedModel", function (req, r
 
 })
 
+router.post("/create_jira_issue",function(req,res){
+    var data = JSON.stringify({
+        "fields": {
+          "project": {
+            "key": "RA"
+          },
+          "summary": req.body.issueTitle,
+          "description": req.body.issueDes,
+          "issuetype": {
+            "name": "Bug"
+          }
+        }
+      });
+      console.log("jira server issue : ",data)
+      
+      var config = {
+        method: 'post',
+        url: 'https://raga-ai.atlassian.net/rest/api/2/issue/',
+        headers: { 
+          'Authorization': 'Basic cGFua2FqLjc2MTNAZ21haWwuY29tOnBTMUJSZ05FU0dRbzFTcm1BVHRaNzg5OQ==', 
+          'Content-Type': 'application/json', 
+          'Cookie': 'atlassian.xsrf.token=624dd076-cf6c-46e0-a09c-ba02a3032d5b_23240cf17f240d97aa476bbd818c7ebb1b5be7ce_lin'
+        },
+        data : data
+      };
+      
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+        res.json({
+            status : "success",
+            payload : response.data
+        })
+      })
+      .catch(function (error) {
+        console.log(error);
+        res.json({
+            status : "error",
+            payload : error
+        })
+      });
+})
+
 module.exports = router;
