@@ -136,7 +136,7 @@ function IssueMessage() {
     //get issues end
 
     //get next image start
-    getNextImage("", "",allConfigurations.data.payload.data.rows[0][0],localStorage.getItem("selectedModelV"));
+    getNextImage(null, null,allConfigurations.data.payload.data.rows[0][0],localStorage.getItem("selectedModelV"));
     //get next image end
   }, [])
 
