@@ -5,6 +5,7 @@ var subpath = express();
 var cors = require('cors');
 var path = require("path");
 // CONTROLLERS
+var ragaApiCtrl = require("./controllers/raga_apis");
 var accuraryCtrl = require('./controllers/accuracy');
 var averagePrecisionCtrl = require('./controllers/average-precision');
 var classifierPerformanceCtrl = require('./controllers/classifier-performance-overall');

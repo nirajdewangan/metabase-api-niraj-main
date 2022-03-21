@@ -45,6 +45,21 @@ function IssueMessage() {
   
   const [imageIdnumber,setImageIdnumber] = useState(0);
   
+//load configuration data start
+const getConfigurations = async ()=>{
+  try{
+  console.log("Inside the getConfigurations");
+
+  }
+  catch(err){
+    
+  }
+
+}
+//load configuration data end
+
+
+
   //let idNumber = 0;
   const onHide = ()=>{
     setShow(false);
@@ -67,6 +82,8 @@ function IssueMessage() {
   }
 
   useEffect(async()=>{
+    let allConfigurations = await getConfigurations();
+    console.log("The list of configuration is ",allConfigurations);
     let mainData = await GetMainTableData("yolov1");
     setMainData(mainData);
     let frameCount = await GetFrameCount("yolov1");
