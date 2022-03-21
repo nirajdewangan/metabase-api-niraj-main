@@ -55,13 +55,13 @@ function IssueMessage() {
 
   //load configuration data start
   const getConfigurations = async () => {
-    return axios.get("http://localhost:3000/api/raga/get_all_configurations");
+    return axios.get("/api/raga/get_all_configurations");
   }
   //load configuration data end
 
   //load issues data start
   const getAllIssues = async () => {
-    return axios.get("http://localhost:3000/api/raga/get_all_issues");
+    return axios.get("/api/raga/get_all_issues");
   }
   //load issues data end
 
@@ -85,9 +85,23 @@ function IssueMessage() {
       })
   }
 
-  const getNextImage = async (id, name) => {
+  const getNextImage = async (id, name,configId,selectedModel) => {
     setCurrentImg(null)
-    let nextImg = await axios.get("http://localhost:3000/api/raga/get_next_image/" + id + "/" + name)
+    let nextImg = await axios.get("/api/raga/get_next_image/" + id + "/" + name+"/"+configId+"/"+selectedModel)
+    if (nextImg && nextImg.data && nextImg.data.payload && nextImg.data.payload.data && nextImg.data.payload.data.rows && nextImg.data.payload.data.rows[0])
+      console.log("The next image is ", nextImg.data.payload.data.rows[0])
+    let imgObj = nextImg.data.payload.data.rows[0];
+    setCurrentImg({
+      url: imgObj[0],
+      videoUrl: imgObj[3],
+      nextId: imgObj[2],
+      nextName: imgObj[1]
+    });
+  }
+
+  const getPreImage = async (id, name,configId,selectedModel) => {
+    setCurrentImg(null)
+    let nextImg = await axios.get("/api/raga/get_pre_image/" + id + "/" + name+"/"+configId+"/"+selectedModel)
     if (nextImg && nextImg.data && nextImg.data.payload && nextImg.data.payload.data && nextImg.data.payload.data.rows && nextImg.data.payload.data.rows[0])
       console.log("The next image is ", nextImg.data.payload.data.rows[0])
     let imgObj = nextImg.data.payload.data.rows[0];
@@ -122,7 +136,7 @@ function IssueMessage() {
     //get issues end
 
     //get next image start
-    getNextImage(1, "abc.jpg");
+    getNextImage("", "",allConfigurations.data.payload.data.rows[0][0],localStorage.getItem("selectedModelV"));
     //get next image end
   }, [])
 
@@ -204,12 +218,12 @@ function IssueMessage() {
 
                     <div style={{ width: "100%", backgroundColor: "#ffffff", marginTop: "20px" }}>
                       <button className="btn btn-default float-left" style={{ width: "100px" }} onClick={async () => {
-                        getNextImage(currentImg.nextId, currentImg.nextName);
+                        getPreImage(currentImg.nextId, currentImg.nextName,configId,selectedModel);
 
                       }}> Previous</button>
 
                       <button className="btn btn-default float-right" style={{ width: "100px", marginLeft: "250px" }} onClick={async () => {
-                        getNextImage(currentImg.nextId, currentImg.nextName);
+                        getNextImage(currentImg.nextId, currentImg.nextName,configId,selectedModel);
 
                       }}>Next</button>
                     </div>
