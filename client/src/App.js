@@ -6,13 +6,15 @@ import IssueMessage from './components/dashboards/section1/issuemessage/IssueMes
 function App() {
   return (
     
-        <Container fluid>
+        <>
+        <div className="container">
           <Header />
           <Routes >
             <Route exact path='/' element={<Dashboard1/>} />
             <Route exact path='/IssueMessage' element={<IssueMessage/>} />
           </Routes >
-        </Container>
+          </div>
+          </>
     
   );
 }

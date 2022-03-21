@@ -93,6 +93,7 @@ app.use(express.static(path.join(__dirname,"./client/mybuild")));
 // app.get('/apis', function(req, res) {
 // 	res.sendFile(__dirname + '/swagger/index.html');
 // });
+app.use('/api/raga',ragaApiCtrl);
 app.use('/api/getAccuracy', accuraryCtrl);
 app.use('/api/getAveragePrecision', averagePrecisionCtrl);
 app.use('/api/getOverallClassifierPerformance', classifierPerformanceCtrl);

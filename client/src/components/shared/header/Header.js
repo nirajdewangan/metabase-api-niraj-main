@@ -4,13 +4,9 @@ import MainMenu from "../menu/mainmenu/MainMenu";
 
 
 function Header(){
-    return(
-        <Row style={{height:'120px'}}>
-            <Col></Col>
-            <Col>
+    return(<>
                 <MainMenu/>
-            </Col>
-        </Row>
+        <hr/></>
     )
 }
 
