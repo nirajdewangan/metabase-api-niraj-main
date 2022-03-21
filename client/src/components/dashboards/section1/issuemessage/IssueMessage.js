@@ -203,7 +203,11 @@ function IssueMessage() {
                     }}></div>
 
                     <div style={{ width: "100%", backgroundColor: "#ffffff", marginTop: "20px" }}>
-                      <button className="btn btn-default float-left" style={{ width: "100px" }}> Previous</button>
+                      <button className="btn btn-default float-left" style={{ width: "100px" }} onClick={async () => {
+                        getNextImage(currentImg.nextId, currentImg.nextName);
+
+                      }}> Previous</button>
+
                       <button className="btn btn-default float-right" style={{ width: "100px", marginLeft: "250px" }} onClick={async () => {
                         getNextImage(currentImg.nextId, currentImg.nextName);
 
@@ -252,6 +256,16 @@ function IssueMessage() {
                     }
                   </div>
                 </div>
+              </div>
+<hr/>
+              <div className="jubotron">
+                <p>
+                  Copyright : @raga.ai
+                </p>
+               <h6>
+                 Statics & data
+               </h6>
+
               </div>
 
             </div>

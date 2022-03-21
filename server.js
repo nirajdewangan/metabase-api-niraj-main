@@ -90,9 +90,11 @@ var applicationUrl = 'http://' +  + ':' + port;
 app.use(express.static(path.join(__dirname,"./client/mybuild")));
 
 
-// app.get('/apis', function(req, res) {
-// 	res.sendFile(__dirname + '/swagger/index.html');
-// });
+app.get('/IssueMessage', function(req, res) {
+	console.log("%% ",path.join(__dirname,"./client/mybuild"))
+	res.sendFile(path.join(__dirname,"./client/mybuild/index.html"));
+});
+
 app.use('/api/raga',ragaApiCtrl);
 app.use('/api/getAccuracy', accuraryCtrl);
 app.use('/api/getAveragePrecision', averagePrecisionCtrl);

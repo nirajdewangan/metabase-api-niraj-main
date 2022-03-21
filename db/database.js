@@ -20,7 +20,13 @@ pool.getConnection((err, connection) => {
 
     }
     }
-    if (connection)    pool.releaseConnection(connection);
+    else{
+        console.log("Connected")
+    }
+    if (connection)  {
+        console.log("database connected")
+        pool.releaseConnection(connection);
+    }  
 
     return
 })

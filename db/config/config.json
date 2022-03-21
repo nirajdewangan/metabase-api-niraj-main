@@ -1,8 +1,8 @@
 {
 	"development": {
-		"host": "localhost",
-        "user": "root",
-        "password": "root",
+        "host":"database-1.chfrlxkfouxb.us-east-1.rds.amazonaws.com",
+        "user": "admin",
+        "password": "raga12345",
         "database": "data",
         "port": 3306,
         "waitForConnections": true,
