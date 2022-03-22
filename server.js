@@ -95,6 +95,11 @@ app.get('/IssueMessage', function(req, res) {
 	res.sendFile(path.join(__dirname,"./client/mybuild/index.html"));
 });
 
+app.get('/loadScatterChart', function(req, res) {
+	console.log("%% ",path.join(__dirname,"./static_files/index.html"));
+	res.sendFile(path.join(__dirname,"./static_files/index.html"));
+});
+
 app.use('/api/raga',ragaApiCtrl);
 app.use('/api/getAccuracy', accuraryCtrl);
 app.use('/api/getAveragePrecision', averagePrecisionCtrl);
