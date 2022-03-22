@@ -18,7 +18,7 @@ import Matrix from '../../../confusionmatrix/ConfusionMatrix';
 import axios from 'axios';
 import { GetMainTableData, GetFrameCount, GetLabelCount, GetAnamolyCount } from "../../../../services/Service"
 import { message } from 'antd';
-import { globalUri } from '../../../../app.config';
+import { globalUri,globalUri2 } from '../../../../app.config';
 
 function IssueMessage() {
 
@@ -57,13 +57,13 @@ function IssueMessage() {
 
   //load configuration data start
   const getConfigurations = async () => {
-    return axios.get("/api/raga/get_all_configurations");
+    return axios.get(globalUri2+"/api/raga/get_all_configurations");
   }
   //load configuration data end
 
   //load issues data start
   const getAllIssues = async () => {
-    return axios.get("/api/raga/get_all_issues");
+    return axios.get(globalUri2+"/api/raga/get_all_issues");
   }
   //load issues data end
 
@@ -89,7 +89,7 @@ function IssueMessage() {
 
   const getNextImage = async (id, name, configId, selectedModel) => {
     setCurrentImg(null)
-    let nextImg = await axios.get("/api/raga/get_next_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
+    let nextImg = await axios.get(globalUri2+"/api/raga/get_next_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
     if (nextImg && nextImg.data && nextImg.data.payload && nextImg.data.payload.data && nextImg.data.payload.data.rows && nextImg.data.payload.data.rows[0])
       console.log("The next image is ", nextImg.data.payload.data.rows[0])
     let imgObj = nextImg.data.payload.data.rows[0];
@@ -103,7 +103,7 @@ function IssueMessage() {
 
   const getPreImage = async (id, name, configId, selectedModel) => {
     setCurrentImg(null)
-    let nextImg = await axios.get("/api/raga/get_pre_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
+    let nextImg = await axios.get(globalUri2+"/api/raga/get_pre_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
     if (nextImg && nextImg.data && nextImg.data.payload && nextImg.data.payload.data && nextImg.data.payload.data.rows && nextImg.data.payload.data.rows[0])
       console.log("The next image is ", nextImg.data.payload.data.rows[0])
     let imgObj = nextImg.data.payload.data.rows[0];
@@ -117,7 +117,7 @@ function IssueMessage() {
 
   const createJiraIssue = async (issueTitle, issueDes) => {
     console.log("inside createIssue ", issueTitle, issueDes);
-    let jiraStt = await axios.post("/api/raga/create_jira_issue", {
+    let jiraStt = await axios.post(globalUri2+"/api/raga/create_jira_issue", {
       issueTitle: issueTitle,
       issueDes: issueDes
     })
