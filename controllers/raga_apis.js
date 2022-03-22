@@ -240,7 +240,7 @@ router.post("/create_jira_issue",function(req,res){
     var data = JSON.stringify({
         "fields": {
           "project": {
-            "key": "RA"
+            "key": "PROJECT11"
           },
           "summary": req.body.issueTitle,
           "description": req.body.issueDes,
@@ -253,14 +253,15 @@ router.post("/create_jira_issue",function(req,res){
       
       var config = {
         method: 'post',
-        url: 'https://raga-ai.atlassian.net/rest/api/2/issue/',
+        url: 'https://vineetnandan.atlassian.net/rest/api/2/issue',
         headers: { 
-          'Authorization': 'Basic cGFua2FqLjc2MTNAZ21haWwuY29tOnBTMUJSZ05FU0dRbzFTcm1BVHRaNzg5OQ==', 
+          'Authorization': 'Basic cHJhZGVlcC5weWRhaEByYWdhLmFpOkJmem5XMFpnU0l4ZnRpYzNJZTVQQ0M1NQ==', 
           'Content-Type': 'application/json', 
-          'Cookie': 'atlassian.xsrf.token=624dd076-cf6c-46e0-a09c-ba02a3032d5b_23240cf17f240d97aa476bbd818c7ebb1b5be7ce_lin'
+          'Cookie': 'atlassian.xsrf.token=2fd4216d-5387-4517-906f-d1834a1e8776_da8da59d2f500f77ca206cce64c72158baaf84c6_lin'
         },
         data : data
       };
+      
       
       axios(config)
       .then(function (response) {

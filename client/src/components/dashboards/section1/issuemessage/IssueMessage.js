@@ -19,8 +19,6 @@ import axios from 'axios';
 import { GetMainTableData, GetFrameCount, GetLabelCount, GetAnamolyCount } from "../../../../services/Service"
 import { message } from 'antd';
 import { globalUri } from '../../../../app.config';
-import spec from "./dataset";
-import embed from 'vega-embed';
 
 function IssueMessage() {
 
