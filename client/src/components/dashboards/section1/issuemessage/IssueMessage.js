@@ -19,6 +19,8 @@ import axios from 'axios';
 import { GetMainTableData, GetFrameCount, GetLabelCount, GetAnamolyCount } from "../../../../services/Service"
 import { message } from 'antd';
 import { globalUri } from '../../../../app.config';
+import spec from "./dataset";
+import embed from 'vega-embed';
 
 function IssueMessage() {
 
@@ -52,6 +54,8 @@ function IssueMessage() {
   const [nextImg, setNextImg] = useState(null);
   const [videoTm, setVideoTm] = useState(0);
   const [selectedModel, setSelectedModel] = useState("");
+
+  console.log("loading the scatter chart")
 
   //load configuration data start
   const getConfigurations = async () => {
@@ -120,10 +124,11 @@ function IssueMessage() {
       issueDes: issueDes
     })
     console.log('the jira create status is ', jiraStt);
-    alert("Jira issue created : "+issueDes);
+    alert("Jira issue created : " + issueDes);
   }
 
   useEffect(async () => {
+
     //load model start
     setSelectedModel(localStorage.getItem("selectedModelV"));
     //load model end
@@ -171,7 +176,7 @@ function IssueMessage() {
                         <div style={{ width: "100%", padding: '10px', backgroundColor: "#ffffff", margin: "10px", border: "1px solid #cccccc", borderRadius: "10px" }}>
 
 
-                          <span style={{fontFamily:"georgia",fontSize:"20px",color:"red"}}>{i + 1}. </span>
+                          <span style={{ fontFamily: "georgia", fontSize: "20px", color: "red" }}>{i + 1}. </span>
                           <b>{issue[2]}</b> is <b>{issue[3]}</b> <b>{issue[5]}</b> <b>{issue[4]}</b> under the rule id <b>{issue[0]}</b> and configuration id <b>{issue[1]}</b>
                           <br />
                           <div style={{ display: "flex", flexDirection: "row-reverse" }}>
@@ -289,6 +294,13 @@ function IssueMessage() {
                   </div>
                 </div>
               </div>
+
+              <div class="row">
+                <hr />
+                <iframe width="100%" height="600px" src={`/loadScatterChart`} frameborder="0" allowtransparency></iframe>
+              </div>
+
+
               <hr />
               <div className="jubotron">
                 <p>

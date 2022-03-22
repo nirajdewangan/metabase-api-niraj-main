@@ -84,12 +84,12 @@ const columns = [
     },
   },
   {
-    title: "Number of Instances",
+    title: "Instances",
     dataIndex: "num_instances",
 
   },
   {
-    title: "Overall Health",
+    title: "Health",
     dataIndex: "health",
 
   },
@@ -99,12 +99,12 @@ const columns = [
 
   },
   {
-    title: "Need Retraining",
+    title: "Retraining",
     dataIndex: "needs_retraining",
 
   },
   {
-    title: "Confidence Score",
+    title: "Confidence",
     dataIndex: "confidence",
 
   },

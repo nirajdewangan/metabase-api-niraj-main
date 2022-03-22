@@ -26,6 +26,7 @@
     "react-scripts": "5.0.0",
     "styled-components": "^5.3.3",
     "styled-theme": "^0.3.3",
+    "vega-embed": "^6.20.8",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
