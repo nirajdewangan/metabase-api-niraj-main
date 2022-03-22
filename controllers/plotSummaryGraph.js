@@ -46,13 +46,19 @@ router.get('/', ((req, res, next) => {
 	timeSlice,
    ms.model_name) AS a`;
 		}		else {
-			query = `SELECT a.*,mus.uptime FROM (SELECT  ms.model_name, FROM_UNIXTIME(TIMESTAMP) AS timestamp, health, needs_retraining, drift AS drift, num_instances,
-		SUM(confidence) AS confidence,SUM(mts.data_drift) AS data_drift, 
-		SUM(infer_time) AS infer_time, row_number() over (partition by ms.model_name) as day
-		FROM model_summary ms 
-		JOIN model_timeseries_summary mts ON mts.model_name = ms.model_name
-		 WHERE DATE(FROM_UNIXTIME(TIMESTAMP)) >= "${date1}" AND DATE(FROM_UNIXTIME(TIMESTAMP)) <= "${date3}" 
-		GROUP BY ms.model_name,DATE(FROM_UNIXTIME(TIMESTAMP))) AS a LEFT JOIN model_uptime_summary mus ON (mus.day = a.day AND a.model_name = mus.model_name)`;
+			query = `SELECT a.*,mus.uptime FROM (SELECT * FROM (SELECT  ms.model_name, FROM_UNIXTIME(TIMESTAMP) AS timestamp, health, needs_retraining, drift AS drift, num_instances,
+			SUM(confidence) AS confidence,SUM(mts.data_drift) AS data_drift, 
+			SUM(infer_time) AS infer_time,( 
+					CASE ms.model_name 
+					WHEN @curType 
+					THEN @curRow := @curRow + 1 
+					ELSE @curRow := 1 AND @curType := ms.model_name END
+				  ) + 1 AS DAY
+			FROM model_summary ms 
+			JOIN model_timeseries_summary mts ON mts.model_name = ms.model_name,
+			 (SELECT @curRow := 0, @curType := '') r
+			 WHERE DATE(FROM_UNIXTIME(TIMESTAMP)) >= "${date1}" AND DATE(FROM_UNIXTIME(TIMESTAMP)) <= "${date3}" 
+			GROUP BY ms.model_name,DATE(FROM_UNIXTIME(TIMESTAMP))) AS b ) AS a LEFT JOIN model_uptime_summary mus ON (mus.day = a.day AND a.model_name = mus.model_name)`;
 		}
 
     }else{

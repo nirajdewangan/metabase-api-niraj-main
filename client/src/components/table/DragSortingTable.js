@@ -190,7 +190,7 @@ const DragSortingTable = (props) => {
         enabled: false
       }
       values.key = index + 1;
-      if (values.key == 2 || values.key == 3) {
+      if (values.key == 2 || values.key == 1) {
         values.enabled = true;
       }
       values.model_name = item.model_name;
