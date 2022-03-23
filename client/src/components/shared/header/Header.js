@@ -6,7 +6,9 @@ import MainMenu from "../menu/mainmenu/MainMenu";
 function Header(){
     return(<>
                 <MainMenu/>
-        <hr/></>
+        <div style={{marginTop:"20px"}}></div>
+        <hr/>
+        </>
     )
 }
 

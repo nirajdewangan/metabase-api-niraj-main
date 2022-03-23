@@ -224,9 +224,9 @@ videoRef.play();
             </div> */}
 
             <div className="row">
-            <div className="col-lg-4">
+            <div className="col-lg-12">
               <h4>Issue List</h4>
-              <div style={{ width: "100%", height: "250px", padding: "20px", overflowY: "scroll" }}>
+              <div style={{ width: "100%", height: "400px", padding: "20px", overflowY: "scroll",overflowX:"hidden" }}>
               {/* {allIssuesData}
               <ReactPaginate
                     previousLabel={"prev"}
@@ -270,7 +270,7 @@ videoRef.play();
               </div>
             </div> 
 
-            <div className="col-lg-8">
+            <div className="col-lg-12" style={{marginTop:"40px"}}>
             <h4>Configuration Table</h4>
             <div className="row" style={{ marginTop: "20px" }}>
               <div className="col-lg-4">
@@ -296,7 +296,7 @@ videoRef.play();
             </div>
 
             <div className="row" style={{ marginTop: "20px" }}>
-              <iframe width="100%" height="2400px" src={`http://3.6.67.248:3000/public/dashboard/1f03136c-37c7-484e-85d2-f74d71aae0be?configuration_id=${configId}&model=${selectedModel}`} frameborder="0" allowtransparency
+              <iframe width="100%"  height="2800px" src={`http://3.6.67.248:3000/public/dashboard/1f03136c-37c7-484e-85d2-f74d71aae0be?configuration_id=${configId}&model=${selectedModel}`} frameborder="0" allowtransparency
               id="iframeconfig"
               
               ></iframe>
@@ -309,19 +309,22 @@ videoRef.play();
 
             <hr />
             <div className="row" style={{ marginTop: "50px" }}>
+              <h4 style={{fontFamily:"georgia",fontSize:"20px",marginLeft : "200px",fontWeight:"bold"}}>Configuration Images</h4>
               {
 
                 currentImg && (
-                  <div className="col-lg-6">
+                  <div className="col-lg-8">
                     <div style={{
                       border: "1px solid #eeeeee", padding: "20px", backgroundImage: "url(" + currentImg.url + ")",
-                      backgroundPosition: 'center',
-                      backgroundSize: 'cover',
+                      // backgroundPosition: 'center',
+                      backgroundSize: 'contain',
                       backgroundRepeat: 'no-repeat',
-                      width: "70%",
+                      width: "100%",
                       height: "500px",
                       margin: "auto"
                     }}></div>
+
+                    {/* <img src={currentImg.url} width="600px" height="500px"/> */}
 
                     <div style={{ width: "70%", backgroundColor: "#ffffff", margin: "auto", marginTop: "20px" }}>
                       <button className="btn btn-default float-left" style={{ width: "100px" }} onClick={async () => {
@@ -338,7 +341,7 @@ videoRef.play();
 
               }
 
-              <div className="col-lg-6">
+              <div className="col-lg-4">
                 <div className="row">
                   <div className="col-lg-4">
                     <select id="videoTime" className="form-control" onChange={(evt) => {
@@ -375,7 +378,7 @@ videoRef.play();
                   
       <Modal show={showModel} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Video Stream</Modal.Title>
+          <Modal.Title>Configuration Video</Modal.Title>
         </Modal.Header>
         <Modal.Body>
         {
@@ -410,11 +413,12 @@ videoRef.play();
                 </div>
               </div>
 
-              <div class="row">
-                <hr />
+              <div class="row" style={{marginTop:"50px"}}>
+                <div className="col-lg12">
+              <h4 style={{fontFamily:"georgia",fontSize:"20px",marginLeft : "200px",fontWeight:"bold"}}>Configuration Datapoint</h4>
                 <iframe width="100%" height="600px" src={`/loadScatterChart`} frameborder="0" allowtransparency></iframe>
               </div>
-
+              </div>
 
               <hr />
               <div className="jubotron">

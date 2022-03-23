@@ -8,9 +8,9 @@ function App() {
     
         <>
         <div className="container-fluid">
-          <div className='row'>
+          
           <Header />
-          </div>
+          
           <Routes >
             <Route exact path='/' element={<Dashboard1/>} />
             <Route exact path='/IssueMessage' element={<IssueMessage/>} />
