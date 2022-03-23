@@ -222,7 +222,8 @@ const DragSortingTable = (props) => {
   }, [props])
 
   return (
-    <DndProvider backend={HTML5Backend}>
+    <div className="row">
+    {/* <DndProvider backend={HTML5Backend}> */}
       <Table
 
         dataSource={data}
@@ -234,7 +235,8 @@ const DragSortingTable = (props) => {
         rowClassName={record => !record.enabled && "disabled-row"}
         columns={columns}
       />
-    </DndProvider>
+    {/* </DndProvider> */}
+    </div>
   );
 };
 
