@@ -310,25 +310,26 @@ videoRef.play();
             <hr />
             <div className="row" style={{ marginTop: "50px" }}>
               <h4 style={{fontFamily:"georgia",fontSize:"20px",marginLeft : "200px",fontWeight:"bold"}}>Configuration Images</h4>
-              {
+              
 
-                currentImg && (
+                
                   <div className="col-lg-8">
                     <div style={{
-                      border: "1px solid #eeeeee", padding: "20px", backgroundImage: "url(" + currentImg.url + ")",
+                      border: "1px solid #eeeeee", padding: "20px", backgroundImage: "url(" + currentImg?.url + ")",
                       // backgroundPosition: 'center',
                       backgroundSize: 'contain',
                       backgroundRepeat: 'no-repeat',
                       width: "100%",
                       height: "500px",
-                      margin: "auto"
+                      margin: "auto",
+                      transition: "all 100ms linear 0.4s"
                     }}></div>
 
                     {/* <img src={currentImg.url} width="600px" height="500px"/> */}
 
                     <div style={{ width: "70%", backgroundColor: "#ffffff", margin: "auto", marginTop: "20px" }}>
                       <button className="btn btn-default float-left" style={{ width: "100px" }} onClick={async () => {
-                        getPreImage(currentImg.nextId, currentImg.nextName, configId, selectedModel);
+                        getPreImage(currentImg?.nextId, currentImg?.nextName, configId, selectedModel);
 
                       }}> Previous</button>
 
@@ -337,9 +338,9 @@ videoRef.play();
 
                       }}>Next</button>
                     </div>
-                  </div>)
+                  </div>
 
-              }
+              
 
               <div className="col-lg-4">
                 <div className="row">
