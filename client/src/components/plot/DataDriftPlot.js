@@ -67,6 +67,11 @@ const DataDriftPlot = (props) => {
         autoHide: true,
         autoRotate: false,
       },
+      line: { style: { stroke: '#aaa' } },
+    },
+    yAxis: {
+      grid: { line: { style: { stroke: '#fff' } } },
+      line: { style: { stroke: '#aaa' } },
     },
   };
   return <Column {...config} />;

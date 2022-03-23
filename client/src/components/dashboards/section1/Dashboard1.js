@@ -28,7 +28,7 @@ function Dashboard1() {
           <Row>
             <Col xs={12} sm={12} md={12}>
               <Row>
-                <Col xs={12} sm={12} md={1}></Col>
+                
                 <Col xs={12} sm={12} md={2}>
                
                   <Form.Select aria-label="Default select example" disabled>
@@ -53,7 +53,7 @@ function Dashboard1() {
                     <option value={"30"} style={{backgroundColor:'lightgrey'}} disabled>Last 30 days</option>
                   </Form.Select>
                 </Col>
-                <Col xs={12} sm={12} md={1}></Col>
+                <Col xs={12} sm={12} md={2}></Col>
                 <Col xs={12} sm={12} md={2}>
                   <Button
                     variant="secondary"
@@ -95,7 +95,7 @@ function Dashboard1() {
                 </Col>
               </Row>
               <Row>
-                <Col xs={12} sm={12} md={1}></Col>
+                
                 <Col xs={12} sm={12} md={2}></Col>
                 <Col xs={12} sm={12} md={2}></Col>
                 <Col xs={12} sm={12} md={2}>
@@ -121,13 +121,11 @@ function Dashboard1() {
                 <Col></Col>
               </Row>
               <Row style={{ marginTop: "60px" }}>
-                <Col xs={12} sm={12} md={2}></Col>
-                <Col xs={12} sm={12} md={8}>
+               
+                <Col xs={12} sm={12} md={12}>
                   <DragSortingTable numDays={numberOfDays}/>
                 </Col>
-                <Col className="p-5" xs={12} sm={12} md={1}>
-                  {/* <CircularProgressBar /> */}
-                </Col>
+               
               </Row>
             </Col>
           </Row>
