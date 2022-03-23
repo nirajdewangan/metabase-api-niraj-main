@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal"; 
+import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import { WarningFilled, PlusCircleOutlined } from "@ant-design/icons";
 import Card from "react-bootstrap/Card";
@@ -19,40 +19,126 @@ import Matrix from '../../../confusionmatrix/ConfusionMatrix';
 import axios from 'axios';
 import { GetMainTableData, GetFrameCount, GetLabelCount, GetAnamolyCount } from "../../../../services/Service"
 import { message } from 'antd';
-import { globalUri,globalUri2 } from '../../../../app.config';
+import { globalUri, globalUri2 } from '../../../../app.config';
 import ReactPaginate from 'react-paginate';
+
+function PaginatedItems({ itemsPerPage,items }) {
+  // We start with an empty list of items.
+  const [currentItems, setCurrentItems] = useState(null);
+  const [pageCount, setPageCount] = useState(0);
+  // Here we use item offsets; we could also use page offsets
+  // following the API or data you're working with.
+  const [itemOffset, setItemOffset] = useState(0);
+
+  useEffect(() => {
+    // Fetch items from another resources.
+    const endOffset = itemOffset + itemsPerPage;
+    console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    setCurrentItems(items.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(items.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage]);
+
+  // Invoke when user click to request another page.
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % items.length;
+    console.log(
+      `User requested page number ${event.selected}, which is offset ${newOffset}`
+    );
+    setItemOffset(newOffset);
+  };
+
+  return (
+    <>
+      <Items currentItems={currentItems} />
+      <ReactPaginate
+        breakLabel="..."
+        nextLabel="next >"
+        onPageChange={handlePageClick}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        previousLabel="< previous"
+        renderOnZeroPageCount={null}
+      />
+    </>
+  );
+}
+
+const Items = ({ currentItems }) => {
+  const createJiraIssue = async (issueTitle, issueDes) => {
+    console.log("inside createIssue ", issueTitle, issueDes);
+    let jiraStt = await axios.post(globalUri2 + "/api/raga/create_jira_issue", {
+      issueTitle: issueTitle,
+      issueDes: issueDes
+    })
+    console.log('the jira create status is ', jiraStt);
+    alert("Jira issue created : " + issueDes);
+  }
+  return (
+    <>
+      {currentItems.map((issue, i) => {
+        console.log("Issue is :: ", issue)
+        return (
+          <>
+            <div style={{ width: "100%", padding: '10px', backgroundColor: "#ffffff", margin: "10px", border: "1px solid #cccccc", borderRadius: "10px" }}>
+
+
+              <span style={{ fontFamily: "georgia", fontSize: "20px", color: "red" }}>{i + 1}. </span>
+              <b>{issue[2]}</b> is <b>{issue[3]}</b> <b>{issue[5]}</b> <b>{issue[4]}</b> under the rule id <b>{issue[0]}</b> and configuration id <b>{issue[1]}</b>
+              <br />
+              <div style={{ display: "flex", flexDirection: "row-reverse" }}>
+                <button style={{ width: "30px", height: "30px" }} className="btn btn-danger btn-sm" onClick={() => {
+                  createJiraIssue("Raga Ai Issue-" + (i + 1), `
+                            ${issue[2]} is ${issue[3]} ${issue[5]} ${issue[4]} under the rule id ${issue[0]} and configuration id ${issue[1]}
+                            `);
+                }}>+</button> &nbsp;&nbsp;&nbsp;&nbsp;
+                <button style={{ width: "30px", height: "30px" }} className="btn btn-primary btn-sm">
+                  -
+                </button>
+
+              </div>
+            </div>
+          </>
+        )
+      })}
+    </>
+  );
+}
 
 function IssueMessage() {
 
   //ReactPaginate
-//   const [offset, setOffset] = useState(0);
-// const [perPage] = useState(10);
-// const [pageCount, setPageCount] = useState(0)
+  //   const [offset, setOffset] = useState(0);
+  // const [perPage] = useState(10);
+  // const [pageCount, setPageCount] = useState(0)
 
 
-const [showModel, setShowModel] = useState(false);
+  const [showModel, setShowModel] = useState(false);
 
-const handleClose = () => {
-  setShowModel(false)
+  const handleClose = () => {
+    setShowModel(false)
 
-};
-const handleShow = () => {
-  setShowModel(true)
-  
-  setTimeout(function(){
-  videoReference();
-  },1000);
+  };
+  const handleShow = () => {
+    setShowModel(true)
 
-};
+    setTimeout(function () {
+      videoReference();
+    }, 1000);
+
+  };
+  // allIssuesData
 
 
-const videoReference = () => {
-var videoRef = document.getElementById("id1");
-console.log("Video time is ", parseInt(videoTm));
-videoRef.currentTime = parseInt(videoTm);
-videoRef.play();
 
-}
+
+
+  const videoReference = () => {
+    var videoRef = document.getElementById("id1");
+    console.log("Video time is ", parseInt(videoTm));
+    videoRef.currentTime = parseInt(videoTm);
+    videoRef.play();
+
+  }
   const [allConfigurationsData, setAllConfigurationData] = useState([]);
   const [allIssuesData, setAllIssuesData] = useState([]);
 
@@ -88,13 +174,13 @@ videoRef.play();
 
   //load configuration data start
   const getConfigurations = async () => {
-    return axios.get(globalUri2+"/api/raga/get_all_configurations");
+    return axios.get(globalUri2 + "/api/raga/get_all_configurations");
   }
   //load configuration data end
 
   //load issues data start
   const getAllIssues = async () => {
-    return axios.get(globalUri2+"/api/raga/get_all_issues");
+    return axios.get(globalUri2 + "/api/raga/get_all_issues");
   }
   //load issues data end
 
@@ -120,7 +206,7 @@ videoRef.play();
 
   const getNextImage = async (id, name, configId, selectedModel) => {
     setCurrentImg(null)
-    let nextImg = await axios.get(globalUri2+"/api/raga/get_next_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
+    let nextImg = await axios.get(globalUri2 + "/api/raga/get_next_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
     if (nextImg && nextImg.data && nextImg.data.payload && nextImg.data.payload.data && nextImg.data.payload.data.rows && nextImg.data.payload.data.rows[0])
       console.log("The next image is ", nextImg.data.payload.data.rows[0])
     let imgObj = nextImg.data.payload.data.rows[0];
@@ -134,7 +220,7 @@ videoRef.play();
 
   const getPreImage = async (id, name, configId, selectedModel) => {
     setCurrentImg(null)
-    let nextImg = await axios.get(globalUri2+"/api/raga/get_pre_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
+    let nextImg = await axios.get(globalUri2 + "/api/raga/get_pre_image/" + id + "/" + name + "/" + configId + "/" + selectedModel)
     if (nextImg && nextImg.data && nextImg.data.payload && nextImg.data.payload.data && nextImg.data.payload.data.rows && nextImg.data.payload.data.rows[0])
       console.log("The next image is ", nextImg.data.payload.data.rows[0])
     let imgObj = nextImg.data.payload.data.rows[0];
@@ -148,7 +234,7 @@ videoRef.play();
 
   const createJiraIssue = async (issueTitle, issueDes) => {
     console.log("inside createIssue ", issueTitle, issueDes);
-    let jiraStt = await axios.post(globalUri2+"/api/raga/create_jira_issue", {
+    let jiraStt = await axios.post(globalUri2 + "/api/raga/create_jira_issue", {
       issueTitle: issueTitle,
       issueDes: issueDes
     })
@@ -178,41 +264,41 @@ videoRef.play();
       setAllIssuesData(allIssues.data.payload.data.rows);
     }
     //get issues end
-   
+
     //get next image start
     getNextImage(null, null, allConfigurations.data.payload.data.rows[0][0], localStorage.getItem("selectedModelV"));
     //get next image end
   }, [])
 
-//ReactPaginate
-//   const getData = async() => {
-//     let allIssues = await getAllIssues();
-//     console.log("All issues == ", allIssues.data.payload.data.rows);
+  //ReactPaginate
+  //   const getData = async() => {
+  //     let allIssues = await getAllIssues();
+  //     console.log("All issues == ", allIssues.data.payload.data.rows);
 
-    
 
-//     if (allIssues && allIssues.data && allIssues.data.payload && allIssues.data.payload.data && allIssues.data.payload.data.rows) {
-//       // setAllIssuesData(allIssues.data.payload.data.rows);
-    
-//     const data = allIssues.data.payload.data.rows;
-//               const slice = data.slice(offset, offset + perPage)
-//               const postData = slice.map(pd => <div key={pd.id}>
-//                   <p>{pd.title}</p>
-//                   <img src={pd.thumbnailUrl} alt=""/>
-//               </div>)
-//               setAllIssuesData(postData)
-//               setPageCount(Math.ceil(data.length / perPage))
-//               }         
-// }
 
-// useEffect(() => {
-//   getData()
-// }, [offset])
+  //     if (allIssues && allIssues.data && allIssues.data.payload && allIssues.data.payload.data && allIssues.data.payload.data.rows) {
+  //       // setAllIssuesData(allIssues.data.payload.data.rows);
 
-// const handlePageClick = (e) => {
-//   const selectedPage = e.selected;
-//   setOffset(selectedPage + 1)
-// };
+  //     const data = allIssues.data.payload.data.rows;
+  //               const slice = data.slice(offset, offset + perPage)
+  //               const postData = slice.map(pd => <div key={pd.id}>
+  //                   <p>{pd.title}</p>
+  //                   <img src={pd.thumbnailUrl} alt=""/>
+  //               </div>)
+  //               setAllIssuesData(postData)
+  //               setPageCount(Math.ceil(data.length / perPage))
+  //               }         
+  // }
+
+  // useEffect(() => {
+  //   getData()
+  // }, [offset])
+
+  // const handlePageClick = (e) => {
+  //   const selectedPage = e.selected;
+  //   setOffset(selectedPage + 1)
+  // };
 
   return (
     <>
@@ -224,10 +310,10 @@ videoRef.play();
             </div> */}
 
             <div className="row">
-            <div className="col-lg-12">
-              <h4>Issue List</h4>
-              <div style={{ width: "100%", height: "400px", padding: "20px", overflowY: "scroll",overflowX:"hidden" }}>
-              {/* {allIssuesData}
+              <div className="col-lg-12">
+                <h4>Issue List</h4>
+                <div style={{ width: "100%", height: "400px", padding: "20px", overflowY: "scroll", overflowX: "hidden" }}>
+                  {/* {allIssuesData}
               <ReactPaginate
                     previousLabel={"prev"}
                     nextLabel={"next"}
@@ -240,76 +326,51 @@ videoRef.play();
                     containerClassName={"pagination"}
                     subContainerClassName={"pages pagination"}
                     activeClassName={"active"}/> */}
-                {
-                  allIssuesData.map((issue, i) => {
-                    console.log("Issue is :: ", issue)
-                    return (
-                      <>
-                        <div style={{ width: "100%", padding: '10px', backgroundColor: "#ffffff", margin: "10px", border: "1px solid #cccccc", borderRadius: "10px" }}>
-
-
-                          <span style={{ fontFamily: "georgia", fontSize: "20px", color: "red" }}>{i + 1}. </span>
-                          <b>{issue[2]}</b> is <b>{issue[3]}</b> <b>{issue[5]}</b> <b>{issue[4]}</b> under the rule id <b>{issue[0]}</b> and configuration id <b>{issue[1]}</b>
-                          <br />
-                          <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-                            <button style={{ width: "30px", height: "30px" }} className="btn btn-danger btn-sm" onClick={() => {
-                              createJiraIssue("Raga Ai Issue-" + (i + 1), `
-                              ${issue[2]} is ${issue[3]} ${issue[5]} ${issue[4]} under the rule id ${issue[0]} and configuration id ${issue[1]}
-                              `);
-                            }}>+</button> &nbsp;&nbsp;&nbsp;&nbsp;
-                            <button style={{ width: "30px", height: "30px" }} className="btn btn-primary btn-sm">
-                              -
-                            </button>
-
-                          </div>
-                        </div>
-                      </>
-                    )
-                  })
-                }
-              </div>
-            </div> 
-
-            <div className="col-lg-12" style={{marginTop:"40px"}}>
-            <h4>Configuration Table</h4>
-            <div className="row" style={{ marginTop: "20px" }}>
-              <div className="col-lg-4">
-
-                <select className="form-control" name="config" onChange={(evt) => {
-                  console.log('the event is ', evt.target.value);
-                  setConfigId(evt.target.value);
-
-                }}>
-                  {
-                    allConfigurationsData.map((config) => {
-                      return (<>
-                        <option value={config[0]}>Configuration-{config[0]}</option>
-                      </>)
-                    })
+                  {allIssuesData && (allIssuesData.length > 0) && (<PaginatedItems itemsPerPage={4} items={allIssuesData} />)
                   }
-                </select>
-
+                </div>
               </div>
-              <div className="col-lg-8">
 
+              <div className="col-lg-12" style={{ marginTop: "40px" }}>
+                <h4>Configuration Table</h4>
+                <div className="row" style={{ marginTop: "20px" }}>
+                  <div className="col-lg-4">
+
+                    <select className="form-control" name="config" onChange={(evt) => {
+                      console.log('the event is ', evt.target.value);
+                      setConfigId(evt.target.value);
+
+                    }}>
+                      {
+                        allConfigurationsData.map((config) => {
+                          return (<>
+                            <option value={config[0]}>Configuration-{config[0]}</option>
+                          </>)
+                        })
+                      }
+                    </select>
+
+                  </div>
+                  <div className="col-lg-8">
+
+                  </div>
+                </div>
+
+                <div className="row" style={{ marginTop: "20px" }}>
+                  <iframe width="100%" height="2800px" src={`http://3.6.67.248:3000/public/dashboard/1f03136c-37c7-484e-85d2-f74d71aae0be?configuration_id=${configId}&model=${selectedModel}`} frameborder="0" allowtransparency
+                    id="iframeconfig"
+
+                  ></iframe>
+                </div>
               </div>
             </div>
 
-            <div className="row" style={{ marginTop: "20px" }}>
-              <iframe width="100%"  height="2800px" src={`http://3.6.67.248:3000/public/dashboard/1f03136c-37c7-484e-85d2-f74d71aae0be?configuration_id=${configId}&model=${selectedModel}`} frameborder="0" allowtransparency
-              id="iframeconfig"
-              
-              ></iframe>
-            </div>
-            </div> 
-            </div>
 
-          
 
 
             <hr />
             <div className="row" style={{ marginTop: "50px" }}>
-              <h4 style={{fontFamily:"georgia",fontSize:"20px",marginLeft : "200px",fontWeight:"bold"}}>Configuration Images</h4>
+              <h4 style={{ fontFamily: "georgia", fontSize: "20px", marginLeft: "200px", fontWeight: "bold" }}>Configuration Images</h4>
               {
 
                 currentImg && (
@@ -375,49 +436,49 @@ videoRef.play();
                       //       Your browser does not support the video tag.
                       //     </video></>) : (<><h6>Loading..</h6></>)
                     }
-                  
-      <Modal show={showModel} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Configuration Video</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-        {
 
-(currentImg && currentImg.videoUrl) ?
-  (<>
-    {/* Video : {currentImg.videoUrl} */}
-    <video id="id1" width="100%" height="400px" controls onLoad={ () => {
-          var videoRef = document.getElementById("id1");
-          console.log("Video time is ", parseInt(videoTm));
-          videoRef.currentTime = parseInt(videoTm);
-          videoRef.play();
-    }
-    }>
-      <source src={currentImg.videoUrl} type="video/mp4" />
-      <source src={currentImg.videoUrl} type="video/ogg" />
-      Your browser does not support the video tag.
-    </video></>) : (<><h6>Loading..</h6></>)
-}
+                    <Modal show={showModel} onHide={handleClose}>
+                      <Modal.Header closeButton>
+                        <Modal.Title>Configuration Video</Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                        {
 
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          
-        </Modal.Footer>
-      </Modal>
-   
+                          (currentImg && currentImg.videoUrl) ?
+                            (<>
+                              {/* Video : {currentImg.videoUrl} */}
+                              <video id="id1" width="100%" height="400px" controls onLoad={() => {
+                                var videoRef = document.getElementById("id1");
+                                console.log("Video time is ", parseInt(videoTm));
+                                videoRef.currentTime = parseInt(videoTm);
+                                videoRef.play();
+                              }
+                              }>
+                                <source src={currentImg.videoUrl} type="video/mp4" />
+                                <source src={currentImg.videoUrl} type="video/ogg" />
+                                Your browser does not support the video tag.
+                              </video></>) : (<><h6>Loading..</h6></>)
+                        }
+
+                      </Modal.Body>
+                      <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                          Close
+                        </Button>
+
+                      </Modal.Footer>
+                    </Modal>
+
 
                   </div>
                 </div>
               </div>
 
-              <div class="row" style={{marginTop:"50px"}}>
+              <div class="row" style={{ marginTop: "50px" }}>
                 <div className="col-lg12">
-              <h4 style={{fontFamily:"georgia",fontSize:"20px",marginLeft : "200px",fontWeight:"bold"}}>Configuration Datapoint</h4>
-                <iframe width="100%" height="600px" src={`/loadScatterChart`} frameborder="0" allowtransparency></iframe>
-              </div>
+                  <h4 style={{ fontFamily: "georgia", fontSize: "20px", marginLeft: "200px", fontWeight: "bold" }}>Configuration Datapoint</h4>
+                  <iframe width="100%" height="600px" src={`/loadScatterChart`} frameborder="0" allowtransparency></iframe>
+                </div>
               </div>
 
               <hr />

@@ -1,7 +1,8 @@
-.disabled-row {
-    background-color: #ffffff;
-    pointer-events: none;
-    color:black;
-  }
 
-  
+
+  .disabled-row {
+    background-color: #eeeeee;
+    pointer-events: none;
+    color: black;
+    opacity: 0.7;
+    }
