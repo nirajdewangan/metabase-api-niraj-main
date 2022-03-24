@@ -246,7 +246,7 @@ function IssueMessage() {
             <div className="row">
               {(page == 0) &&
                 (<div className="col-lg-12" style={{ marginTop: "40px" }}>
-                  <h4>Issue List</h4>
+                  <h4 style={{ fontFamily: "georgia", fontSize: "20px", fontWeight: "bold" }}>Issue List</h4>
                   <div style={{ width: "100%", padding: "10px" }}>
                     {/* {allIssuesData}
               <ReactPaginate
@@ -295,7 +295,7 @@ function IssueMessage() {
 
               {(page == 1) &&
                 (<div className="col-lg-12" style={{ marginTop: "40px" }}>
-                  <h4>Configuration Table</h4>
+                  <h4 style={{ fontFamily: "georgia", fontSize: "20px", fontWeight: "bold" }}>Configuration Table</h4>
                   <div className="row" style={{ marginTop: "20px" }}>
                     <div className="col-lg-4">
 
