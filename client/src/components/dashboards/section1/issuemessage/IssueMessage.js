@@ -444,7 +444,7 @@ function IssueMessage() {
                 </div>)
               }
 
-              <div className="jubotron">
+              {/* <div className="jubotron">
                 <p>
                   Copyright : @raga.ai
                 </p>
@@ -452,7 +452,7 @@ function IssueMessage() {
                   Statics & data
                 </h6>
 
-              </div>
+              </div> */}
             </div>
           </>)
       }
