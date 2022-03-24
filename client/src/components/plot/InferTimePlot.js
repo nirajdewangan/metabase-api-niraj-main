@@ -60,7 +60,7 @@ const InferTimePlot = (props) => {
         const val = parseFloat(originData.value);
 
         if (val < 0.05) {
-          return (val * 100).toFixed(1) + '%';
+          // return (val * 100).toFixed(1) + '%';
         }
       },
       offset: 2,
