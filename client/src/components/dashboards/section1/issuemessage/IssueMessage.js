@@ -227,19 +227,55 @@ function IssueMessage() {
             </div> */}
 
             <div className="row">
-              <div className="col-lg-12">
-                <button className="btn btn-default" onClick={() => {
+              <div className="col-lg-12" style={{ display: "flex", flexDirection: "row-reverse" }}>
+
+              <a href="javascript:void(0);" style={{color : "blue",fontSize : "17px",fontFamily:"georgia",textDecoration:"underline"}} onClick={() => {
+                  setPage(3)
+                }}>Smart Analysis</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+
+                
+                <a href="javascript:void(0);" style={{color : "blue",fontSize : "17px",fontFamily:"georgia",textDecoration:"underline"}} onClick={() => {
+                  setPage(2)
+                }}>Images</a> 
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+
+                <a href="javascript:void(0);" style={{color : "blue",fontSize : "17px",fontFamily:"georgia",textDecoration:"underline"}} onClick={() => {
+                  setPage(1)
+                }}>Configuration Dashboard</a>
+
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <a href="javascript:void(0);" style={{color : "blue",fontSize : "17px",fontFamily:"georgia",textDecoration:"underline"}} onClick={() => {
                   setPage(0)
-                }} style={{fontFamily:"georgia",fontSize:"15px",border:"1px solid #cccccc"}}>Issue List</button> &nbsp;&nbsp;&nbsp;
+                }}>Issue List</a>
+
+                {/* <button className="btn btn-default" onClick={() => {
+                  setPage(3)
+                }} style={{ fontFamily: "georgia", fontSize: "15px", border: "0px solid #cccccc", color: "blue", textDecoration: "underline" }}>Smart Analysis</button> 
+
+                | <button className="btn btn-default" onClick={() => {
+                  setPage(2)
+                }} style={{ fontFamily: "georgia", fontSize: "15px", border: "0px solid #cccccc", color: "blue", textDecoration: "underline" }}>Images</button> |
+
                 <button className="btn btn-default" onClick={() => {
                   setPage(1)
-                }} style={{fontFamily:"georgia",fontSize:"15px",border:"1px solid #cccccc"}}>Configuration Dashboard</button> &nbsp;&nbsp;&nbsp;
-                <button className="btn btn-default" onClick={() => {
-                  setPage(2)
-                }} style={{fontFamily:"georgia",fontSize:"15px",border:"1px solid #cccccc"}}>Images</button> &nbsp;&nbsp;&nbsp;
-                <button className="btn btn-default" onClick={() => {
-                  setPage(3)
-                }} style={{fontFamily:"georgia",fontSize:"15px",border:"1px solid #cccccc"}}>Smart Analysis</button> &nbsp;&nbsp;&nbsp;
+                }} style={{ fontFamily: "georgia", fontSize: "15px", border: "0px solid #cccccc", color: "blue", textDecoration: "underline" }}>Configuration Dashboard</button>
+
+                | <button className="btn btn-default" onClick={() => {
+                  setPage(0)
+                }} style={{ fontFamily: "georgia", fontSize: "15px", border: "0px solid #cccccc", color: "blue", textDecoration: "underline" }}>Issue List</button>  */}
+
+                {/* -- */}
+
+
+
+
+
+
+
+
+
+
+
               </div>
             </div>
 
