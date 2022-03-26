@@ -71,10 +71,10 @@ const columns = [
     render: (text) => {
       return (<>
         <button style={{ cursor: "pointer" }} className="btn btn-default" onClick={() => {
-          console.log("selected model is ",text)
+          console.log("selected model is ", text)
           localStorage.setItem("selectedModelV", text);
           // return <Redirect to="/IssueMessage"/>
-          window.location.href="/IssueMessage"
+          window.location.href = "/IssueMessage"
         }}>
           {text}
         </button>
@@ -162,6 +162,10 @@ const DragSortingTable = (props) => {
   let summary = []
   let count = 0;
 
+  const populateTxt = (heading, des) => {
+    document.getElementById("desId").innerHTML = heading;
+    document.getElementById("desTxt").innerHTML = des;
+  }
 
   const InitialLoad = async () => {
     console.log("propsnumDays", props.numDays);
@@ -218,12 +222,13 @@ const DragSortingTable = (props) => {
 
 
   useEffect(async () => {
+    populateTxt("Dashboard", "Integrated representation of aggregated field data and deployment performance.");
     InitialLoad();
   }, [props])
 
   return (
     <div className="row">
-    {/* <DndProvider backend={HTML5Backend}> */}
+      {/* <DndProvider backend={HTML5Backend}> */}
       <Table
 
         dataSource={data}
@@ -235,7 +240,7 @@ const DragSortingTable = (props) => {
         rowClassName={record => !record.enabled && "disabled-row"}
         columns={columns}
       />
-    {/* </DndProvider> */}
+      {/* </DndProvider> */}
     </div>
   );
 };

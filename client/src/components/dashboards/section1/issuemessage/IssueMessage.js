@@ -18,12 +18,52 @@ import VideoPlayer from '../../../videoplayer/VideoPlayer';
 import Matrix from '../../../confusionmatrix/ConfusionMatrix';
 import axios from 'axios';
 import { GetMainTableData, GetFrameCount, GetLabelCount, GetAnamolyCount } from "../../../../services/Service"
-import { message } from 'antd';
+import { AutoComplete, message } from 'antd';
 import { globalUri, globalUri2 } from '../../../../app.config';
 import ReactPaginate from 'react-paginate';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import "./IssueMessage.css";
 
 function IssueMessage() {
+  const [rowData] = useState([
+    { make: "Toyota", model: "Celica", price: 35000 },
+    { make: "Ford", model: "Mondeo", price: 32000 },
+    { make: "Porsche", model: "Boxter", price: 72000 }
+  ]);
 
+  const [allIssuesData, setAllIssuesData] = useState([]);
+  const [columnDefs] = useState([
+    { field: 'Serial #', sortable: true, filter: true },
+    {
+      field: 'configuration', sortable: true, filter: true, cellRenderer: (props) => {
+        return (
+          <a href="javascript:void(0);" data-toggle="tooltip" data-placement="right" title="Configuration – States or environmental settings in which the issues occurred.
+
+          " onClick={() => {
+            // alert(props.value);
+            setConfigId(props.value);
+            setPage(1);
+          }}>{props.value}</a>
+        )
+      }
+    },
+    { field: 'Issue Type', sortable: true, filter: true },
+    { field: 'Field Estimate', sortable: true, filter: true },
+    { field: 'Target Value', sortable: true, filter: true },
+    { field: 'Deviance', sortable: true, filter: true },
+    { field: 'model', sortable: true, filter: true },
+    {
+      field: 'action', cellRenderer: (props) => {
+        console.log("==> ", props)
+        return <button onClick={() => {
+          console.log("$$$$$$$$$$$$$$ : ", props.value);
+          createJiraIssue("Raga Ai Issue-", props.value);
+        }} className="btn btn-primary btn-sm" style={{ fontFamily: "georgia" }}>Push to Jira</button>
+      }
+    }
+  ])
   //ReactPaginate
   //   const [offset, setOffset] = useState(0);
   // const [perPage] = useState(10);
@@ -55,28 +95,7 @@ function IssueMessage() {
 
   }
   const [allConfigurationsData, setAllConfigurationData] = useState([]);
-  const [allIssuesData, setAllIssuesData] = useState([]);
 
-  const [show, setShow] = useState(false);
-  const [videoLink, setVideoLink] = useState({});
-  const confusionMatrix = [
-    [0.69, 0.02, 0.04, 0.06, 0.01, 0.14, 0.04],
-    [0.03, 0.70, 0.06, 0.02, 0.07, 0.06, 0.06],
-    [0.04, 0.06, 0.66, 0.02, 0.05, 0.06, 0.11],
-    [0.02, 0.02, 0.18, 0.51, 0.09, 0.12, 0.06],
-    [0.04, 0.08, 0.01, 0.02, 0.80, 0.03, 0.02],
-    [0.07, 0.06, 0.03, 0.07, 0.02, 0.67, 0.08],
-    [0.11, 0.06, 0.07, 0.05, 0.07, 0.06, 0.58]
-  ];
-
-  const labels = ['Class A', 'Class B', 'Class C', 'Class D', 'Class E', 'Class F', 'Class G'];
-
-  const [maindata, setMainData] = useState({})
-  const [confusionMatrixData, setConfusionMatrix] = useState({})
-  const [frame, setFrameCount] = useState([])
-  const [labe, setLabelCount] = useState([])
-  const [anamol, setAnamoly] = useState([])
-  const [Id, setId] = useState([])
 
   const [imageIdnumber, setImageIdnumber] = useState(0);
   const [configId, setConfigId] = useState(0);
@@ -98,26 +117,6 @@ function IssueMessage() {
     return axios.get(globalUri2 + "/api/raga/get_all_issues");
   }
   //load issues data end
-
-  const onHide = () => {
-    setShow(false);
-
-  }
-
-  const imgData = (val) => {
-    setImageIdnumber(val);
-  }
-
-  const playVideo = () => {
-    axios.get(globalUri + "getVideoForImageSlider?image_id=" + imageIdnumber)
-      .then((res) => {
-        let video = res.data.response[0]
-        setVideoLink(video);
-      })
-      .catch((error) => {
-        message.error(error.message);
-      })
-  }
 
   const getNextImage = async (id, name, configId, selectedModel) => {
     // setCurrentImg(null)
@@ -160,7 +159,7 @@ function IssueMessage() {
   }
 
   useEffect(async () => {
-
+    populateTxt("Issues Table","Summary of performance issues captured from field data");
     //load model start
     setSelectedModel(localStorage.getItem("selectedModelV"));
     //load model end
@@ -168,7 +167,7 @@ function IssueMessage() {
     //get configuration start
     let allConfigurations = await getConfigurations();
     if (allConfigurations && allConfigurations.data && allConfigurations.data.payload && allConfigurations.data.payload.data && allConfigurations.data.payload.data.rows) {
-      console.log('the start value is ', allConfigurations.data.payload.data.rows[0][0])
+      console.log('the config start value is ', allConfigurations.data.payload.data.rows[0][0])
       setConfigId(allConfigurations.data.payload.data.rows[0][0])
       setAllConfigurationData(allConfigurations.data.payload.data.rows)
     }
@@ -178,7 +177,26 @@ function IssueMessage() {
     let allIssues = await getAllIssues();
     console.log("All issues == ", allIssues.data.payload.data.rows);
     if (allIssues && allIssues.data && allIssues.data.payload && allIssues.data.payload.data && allIssues.data.payload.data.rows) {
-      setAllIssuesData(allIssues.data.payload.data.rows);
+
+      let rawData = allIssues.data.payload.data.rows;
+      let finalData = [];
+      finalData = rawData.map((issue,i) => {
+        return {
+          "Serial #": (i+1),//issue[0] + "",
+          configuration: issue[1] + "",
+          "Issue Type": issue[2] + "",
+          "Field Estimate": issue[3] + "",
+          "Target Value": issue[4] + "",
+          "Deviance": issue[5] + "",
+          model: issue[6] + "",
+          action: `${issue[2]} is ${issue[3].toFixed(2)} ${issue[5]} ${issue[4]} under the rule id ${issue[0]} and configuration id ${issue[1]}`
+
+        }
+
+      })
+      console.log("$$$$$$$$$$ ", finalData)
+      setAllIssuesData(finalData);
+      // rowData
     }
     //get issues end
 
@@ -217,6 +235,11 @@ function IssueMessage() {
   //   setOffset(selectedPage + 1)
   // };
 
+  const populateTxt = (heading,des)=>{
+    document.getElementById("desId").innerHTML = heading;
+    document.getElementById("desTxt").innerHTML = des;
+  }
+
   return (
     <>
       {
@@ -229,22 +252,26 @@ function IssueMessage() {
             <div className="row">
               <div className="col-lg-12" style={{ display: "flex", flexDirection: "row-reverse" }}>
 
-              <a href="javascript:void(0);" style={{color : "blue",fontSize : "17px",fontFamily:"georgia",textDecoration:"underline"}} onClick={() => {
+                <a href="javascript:void(0);" style={{ color: "blue", fontSize: "17px", fontFamily: "georgia", textDecoration: "underline" }} onClick={() => {
+                  populateTxt("Smart Analysis","Visualization of field data points as clusters, segregated by states and environmental settings.");
                   setPage(3)
                 }}>Smart Analysis</a> &nbsp;&nbsp;|&nbsp;&nbsp;
 
-                
-                <a href="javascript:void(0);" style={{color : "blue",fontSize : "17px",fontFamily:"georgia",textDecoration:"underline"}} onClick={() => {
+
+                <a href="javascript:void(0);" style={{ color: "blue", fontSize: "17px", fontFamily: "georgia", textDecoration: "underline" }} onClick={() => {
+                  populateTxt("Images","Sample images from the configurations (states in which the issues occurred)");
                   setPage(2)
-                }}>Images</a> 
+                }}>Images</a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
 
-                <a href="javascript:void(0);" style={{color : "blue",fontSize : "17px",fontFamily:"georgia",textDecoration:"underline"}} onClick={() => {
+                <a href="javascript:void(0);" style={{ color: "blue", fontSize: "17px", fontFamily: "georgia", textDecoration: "underline" }} onClick={() => {
+                  populateTxt("Configuration Dashboard","AI system estimates of states or environmental settings in which the issues occurred");
                   setPage(1)
                 }}>Configuration Dashboard</a>
 
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="javascript:void(0);" style={{color : "blue",fontSize : "17px",fontFamily:"georgia",textDecoration:"underline"}} onClick={() => {
+                <a href="javascript:void(0);" style={{ color: "blue", fontSize: "17px", fontFamily: "georgia", textDecoration: "underline" }} onClick={() => {
+                  populateTxt("Issues Table","Summary of performance issues captured from field data");
                   setPage(0)
                 }}>Issue List</a>
 
@@ -277,57 +304,23 @@ function IssueMessage() {
 
 
               </div>
+              
             </div>
 
-            <div className="row">
-              {(page == 0) &&
-                (<div className="col-lg-12" style={{ marginTop: "40px" }}>
-                  <h4 style={{ fontFamily: "georgia", fontSize: "20px", fontWeight: "bold" }}>Issue List</h4>
-                  <div style={{ width: "100%", padding: "10px" }}>
-                    {/* {allIssuesData}
-              <ReactPaginate
-                    previousLabel={"prev"}
-                    nextLabel={"next"}
-                    breakLabel={"..."}
-                    breakClassName={"break-me"}
-                    pageCount={pageCount}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    onPageChange={handlePageClick}
-                    containerClassName={"pagination"}
-                    subContainerClassName={"pages pagination"}
-                    activeClassName={"active"}/> */}
-                    {
-                      allIssuesData.map((issue, i) => {
-                        console.log("Issue is :: ", issue)
-                        return (
-                          <>
-                            <div style={{ width: "100%", padding: '10px', backgroundColor: "#ffffff", margin: "10px", border: "1px solid #cccccc", borderRadius: "10px" }}>
+            <div className="row" style={{ marginTop: "30px" }}>
 
+              {/* start */}
 
-                              <span style={{ fontFamily: "georgia", fontSize: "20px", color: "red" }}>{i + 1}. </span>
-                              <b>{issue[2]}</b> is <b>{issue[3].toFixed(2)}</b> <b>{issue[5]}</b> <b>{issue[4]}</b> under the rule id <b>{issue[0]}</b> and configuration id <b>{issue[1]}</b>
-                              <br />
-                              <div style={{ display: "flex", flexDirection: "row-reverse" }}>
-                                <button style={{ width: "30px", height: "30px" }} className="btn btn-danger btn-sm" onClick={() => {
-                                  createJiraIssue("Raga Ai Issue-" + (i + 1), `
-                              ${issue[2]} is ${issue[3]} ${issue[5]} ${issue[4]} under the rule id ${issue[0]} and configuration id ${issue[1]}
-                              `);
-                                }}>+</button> &nbsp;&nbsp;&nbsp;&nbsp;
-                                <button style={{ width: "30px", height: "30px" }} className="btn btn-primary btn-sm">
-                                  -
-                                </button>
-
-                              </div>
-                            </div>
-                          </>
-                        )
-                      })
-                    }
-                  </div>
+              {
+                (page == 0) && allIssuesData.length > 0 && (<div className="ag-theme-alpine" style={{ height: "600px", width: "100%" }}>
+                  <AgGridReact
+                    rowData={allIssuesData} pagination={true} paginationPageSize="10"
+                    rowHeight={50}
+                    columnDefs={columnDefs}>
+                  </AgGridReact>
                 </div>)
               }
-
+              {/* end */}
 
               {(page == 1) &&
                 (<div className="col-lg-12" style={{ marginTop: "40px" }}>
