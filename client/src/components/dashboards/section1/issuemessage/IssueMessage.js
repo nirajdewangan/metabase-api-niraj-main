@@ -42,16 +42,18 @@ function IssueMessage() {
           <a href="javascript:void(0);" data-toggle="tooltip" data-placement="right" title="Configuration – States or environmental settings in which the issues occurred.
 
           " onClick={() => {
-            // alert(props.value);
-            setConfigId(props.value);
-            setPage(1);
-          }}>{props.value}</a>
+              // alert(props.value);
+              setConfigId(props.value);
+              setPage(1);
+            }}>{props.value}</a>
         )
       }
     },
     { field: 'Issue Type', sortable: true, filter: true },
-    { field: 'Field Estimate', sortable: true, filter: true },
-    { field: 'Target Value', sortable: true, filter: true },
+    { field: 'Field Estimate', sortable: true, filter: 'agNumberColumnFilter' },
+    {
+      field: 'Target Value', sortable: true,  filter: 'agNumberColumnFilter'
+    },
     { field: 'Deviance', sortable: true, filter: true },
     { field: 'model', sortable: true, filter: true },
     {
@@ -159,7 +161,7 @@ function IssueMessage() {
   }
 
   useEffect(async () => {
-    populateTxt("Issues Table","Summary of performance issues captured from field data");
+    populateTxt("Issues Table", "Summary of performance issues captured from field data");
     //load model start
     setSelectedModel(localStorage.getItem("selectedModelV"));
     //load model end
@@ -180,9 +182,9 @@ function IssueMessage() {
 
       let rawData = allIssues.data.payload.data.rows;
       let finalData = [];
-      finalData = rawData.map((issue,i) => {
+      finalData = rawData.map((issue, i) => {
         return {
-          "Serial #": (i+1),//issue[0] + "",
+          "Serial #": (i + 1),//issue[0] + "",
           configuration: issue[1] + "",
           "Issue Type": issue[2] + "",
           "Field Estimate": issue[3] + "",
@@ -235,7 +237,7 @@ function IssueMessage() {
   //   setOffset(selectedPage + 1)
   // };
 
-  const populateTxt = (heading,des)=>{
+  const populateTxt = (heading, des) => {
     document.getElementById("desId").innerHTML = heading;
     document.getElementById("desTxt").innerHTML = des;
   }
@@ -253,25 +255,25 @@ function IssueMessage() {
               <div className="col-lg-12" style={{ display: "flex", flexDirection: "row-reverse" }}>
 
                 <a href="javascript:void(0);" style={{ color: "blue", fontSize: "17px", fontFamily: "georgia", textDecoration: "underline" }} onClick={() => {
-                  populateTxt("Smart Analysis","Visualization of field data points as clusters, segregated by states and environmental settings.");
+                  populateTxt("Smart Analysis", "Visualization of field data points as clusters, segregated by states and environmental settings.");
                   setPage(3)
                 }}>Smart Analysis</a> &nbsp;&nbsp;|&nbsp;&nbsp;
 
 
                 <a href="javascript:void(0);" style={{ color: "blue", fontSize: "17px", fontFamily: "georgia", textDecoration: "underline" }} onClick={() => {
-                  populateTxt("Images","Sample images from the configurations (states in which the issues occurred)");
+                  populateTxt("Images", "Sample images from the configurations (states in which the issues occurred)");
                   setPage(2)
                 }}>Images</a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
 
                 <a href="javascript:void(0);" style={{ color: "blue", fontSize: "17px", fontFamily: "georgia", textDecoration: "underline" }} onClick={() => {
-                  populateTxt("Configuration Dashboard","AI system estimates of states or environmental settings in which the issues occurred");
+                  populateTxt("Configuration Dashboard", "AI system estimates of states or environmental settings in which the issues occurred");
                   setPage(1)
                 }}>Configuration Dashboard</a>
 
                 &nbsp;&nbsp;|&nbsp;&nbsp;
                 <a href="javascript:void(0);" style={{ color: "blue", fontSize: "17px", fontFamily: "georgia", textDecoration: "underline" }} onClick={() => {
-                  populateTxt("Issues Table","Summary of performance issues captured from field data");
+                  populateTxt("Issues Table", "Summary of performance issues captured from field data");
                   setPage(0)
                 }}>Issue List</a>
 
@@ -304,7 +306,7 @@ function IssueMessage() {
 
 
               </div>
-              
+
             </div>
 
             <div className="row" style={{ marginTop: "30px" }}>
@@ -328,7 +330,7 @@ function IssueMessage() {
                   <div className="row" style={{ marginTop: "20px" }}>
                     <div className="col-lg-4">
 
-                      <select className="form-control" name="config" onChange={(evt) => {
+                      <select value={configId} className="form-control" name="config" onChange={(evt) => {
                         console.log('the event is ', evt.target.value);
                         setConfigId(evt.target.value);
 
